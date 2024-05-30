@@ -15,13 +15,8 @@ jobs:
 
       - name: Install Quarto
         run: |
-          curl -fsSL -o quarto-linux-amd64.deb https://github.com/quarto-dev/quarto-cli/releases/latest/download/quarto-linux-amd64.deb
-          if [ -s quarto-linux-amd64.deb ]; then
-            sudo dpkg -i quarto-linux-amd64.deb
-          else
-            echo "Failed to download Quarto CLI package."
-            exit 1
-          fi
+          curl -fsSL -o quarto.deb https://github.com/quarto-dev/quarto-cli/releases/download/v1.4.554/quarto-1.4.554-linux-amd64.deb
+          sudo dpkg -i quarto.deb
 
       - name: Render Quarto Project
         run: quarto render --to html
@@ -32,4 +27,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
           publish_branch: gh-pages
-
