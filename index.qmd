@@ -1,0 +1,14 @@
+---
+title: "index"
+format: html
+---
+
+# Welcome to Datatrev
+
+A creative data studio.
+
+## Affordable Data Solutions
+
+Data Visualizations, Explorations, Reporting, Dashboards, Scripts, you name it we do it!
+
+No questions asked, no judgement passed. No job too small! Se habla español.
