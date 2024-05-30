@@ -1,5 +1,8 @@
 project:
+  type: website
   title: "datatrev"
+  theme:
+    light: minty
+    dark: vapor
 
 editor: visual
-
