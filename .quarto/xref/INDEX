@@ -1,5 +1,11 @@
 {
   "index.qmd": {
     "index.html": "f05c4877"
+  },
+  "datatrev.qmd": {
+    "datatrev.html": "53b9c1e7"
+  },
+  "tidytuesday2024/tidy20.qmd": {
+    "tidy20.html": "2f29c60c"
   }
 }

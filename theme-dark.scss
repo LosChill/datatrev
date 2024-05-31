@@ -1,0 +1,10 @@
+/*-- scss:defaults --*/
+$universal-background: #24273A !default;  // Define a default background color
+$font-family-sans-serif: Helvetica;
+
+/*-- scss:rules --*/
+body {
+  background: $universal-background;  // Set the background color
+  background-image: none;             // Clear any background images
+  
+}

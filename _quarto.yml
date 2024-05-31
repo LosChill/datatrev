@@ -1,8 +1,26 @@
 project:
   type: website
   title: "datatrev"
-  theme:
-    light: minty
-    dark: vapor
 
 editor: visual
+
+format:
+  html:
+    grid: 
+      body-width: 1000px
+      sidebar-width: 350px
+      margin-width: 350px
+    theme:
+      light: [minty, theme-light.scss]
+      dark: [vapor, theme-dark.scss]
+
+website:
+  sidebar:
+    style: "floating"
+    alignment: "left"
+    background: primary
+    search: false
+    contents:
+      - section: "Tidy Tuesday 2024"
+        contents:
+          - tidytuesday2024/tidy20.qmd
