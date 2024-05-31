@@ -2,10 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://LosChill.github.io/datatrev/index.html</loc>
-    <lastmod>2024-05-30T07:43:08.128Z</lastmod>
+    <lastmod>2024-05-30T17:49:22.329Z</lastmod>
   </url>
   <url>
     <loc>https://LosChill.github.io/datatrev/datatrev.html</loc>
     <lastmod>2024-05-30T07:16:08.492Z</lastmod>
+  </url>
+  <url>
+    <loc>https://LosChill.github.io/datatrev/tidytuesday2024/tidy20.html</loc>
+    <lastmod>2024-05-31T04:38:21.158Z</lastmod>
   </url>
 </urlset>
