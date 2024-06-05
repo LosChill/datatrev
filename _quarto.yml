@@ -24,3 +24,5 @@ website:
       - section: "Tidy Tuesday 2024"
         contents:
           - tidytuesday2024/tidy20.qmd
+      - text: "Back to GitHub"
+        href: "https://github.com/LosChill/"

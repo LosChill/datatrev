@@ -9,19 +9,15 @@ editor: visual
 
 ## Overview
 
-In my first ever #tidytuesday we are taking a look at a coffee survey. I'll
-make a note up front that I am prioritizing self education over analytical
-integrity here. Curiosity is in the drivers seat, so we are going to see where
-this takes us. Anything I present here is not intended to draw any conclusions
-or correlations (I tried, and any statistically sound correlation just wasn't 
-there with this data).
+In my first ever #tidytuesday we are taking a look at a coffee survey. I'll make a note up front that I am prioritizing self education over analytical integrity here. Curiosity is in the drivers seat, so we are going to see where this takes us. Anything I present here is not intended to draw any conclusions or correlations (I tried, and any statistically sound correlation just wasn't there with this data).
 
 ## ETL (LET)
 
 ### Load Up
 
 Nothing crazy.
-```{r} 
+
+```{r}
 #| label: load-packages
 #| include: true
 
@@ -31,10 +27,10 @@ library(ggforce)
 library(knitr)
 ```
 
-
 ### Extract
 
 I tried the tidytuesdayR::tt_load method and kept getting an error, so we url it.
+
 ```{r}
 #| label: import-data
 #| include: true
@@ -44,13 +40,10 @@ coffee_survey <- read_csv('https://raw.githubusercontent.com/rfordatascience/tid
 
 ### Transform
 
-Nice initial cleaning. I decided straight away that my analysis would not be
-considering open-response answers. I organized the rest of the columns into two
-categories: multiple response, and factored. Here I factor the latter group.
-Later I'll decide what to do with the former.
+Nice initial cleaning. I decided straight away that my analysis would not be considering open-response answers. I organized the rest of the columns into two categories: multiple response, and factored. Here I factor the latter group. Later I'll decide what to do with the former.
 
-Finally I have the pleasure of correcting the "spend" column typo. People need 
-to stop using "spend" as a noun. It is a verb. The noun is "expenditure".
+Finally I have the pleasure of correcting the "spend" column typo. People need to stop using "spend" as a noun. It is a verb. The noun is "expenditure".
+
 ```{r}
 #| label: clean
 #| include: true
@@ -74,26 +67,16 @@ clean_tib <- coffee_survey %>%
 
 ## EDA
 
-I saw the multiple-response columns and decided to try to learn more about the 
-best ways to handle these. I could make each cell a vector, turning the column
-into a list of character vectors, or I could try one-hot encoding. I brought in
-the caret library and played around with dummy variables enough to get a basic
-transformation of all the multiple-response columns into multiple single boolean
-columns for each response. 
+I saw the multiple-response columns and decided to try to learn more about the best ways to handle these. I could make each cell a vector, turning the column into a list of character vectors, or I could try one-hot encoding. I brought in the caret library and played around with dummy variables enough to get a basic transformation of all the multiple-response columns into multiple single boolean columns for each response.
 
-This was messy and I didn't love my function but it was enough to try a Cramers V 
-analysis comparing every column pair for possible correlation. I would love to 
-have found ANY surprise coffee trend that correlated to personal data (like 
-maybe all the cinnamon takers are all unemployed), but the highest chi square 
-was .5 and nothing compelling. So I gave up before I started showing more bias 
-than I had already in wanting to find something.
+This was messy and I didn't love my function but it was enough to try a Cramers V analysis comparing every column pair for possible correlation. I would love to have found ANY surprise coffee trend that correlated to personal data (like maybe all the cinnamon takers are all unemployed), but the highest chi square was .5 and nothing compelling. So I gave up before I started showing more bias than I had already in wanting to find something.
 
 I may clean that code up and include it later.
 
 ### Strip Columns
-But for now I stripped out all of those multiple-response columns. This allowed
-me to drop all NA cells. These columns were the questions that many people seem
-to have just skipped, so stripping them saved more observations.
+
+But for now I stripped out all of those multiple-response columns. This allowed me to drop all NA cells. These columns were the questions that many people seem to have just skipped, so stripping them saved more observations.
+
 ```{r}
 #| label: strip
 #| include: true
@@ -116,16 +99,14 @@ strip_tib <- clean_tib %>%
 
 ### Finding Our Target
 
-What interested me is the self-reported coffee expertise. These questions are
-such a labyrinth of psychology I don't know what analysts really use them for 
-other than profiling over confidence maybe? I thought Dunning-Kruger did away
-with the presumed value of self-assessed expertise.
+What interested me is the self-reported coffee expertise. These questions are such a labyrinth of psychology I don't know what analysts really use them for other than profiling over confidence maybe? I thought Dunning-Kruger did away with the presumed value of self-assessed expertise.
 
 What other question might be fun to compare to this self-expertise?
 
 "Do you know the source of your coffee"
 
 Lets take a look. A jitter-box plot will show this nicely.
+
 ```{r}
 #| label: plot
 #| include: true
@@ -156,11 +137,10 @@ p
 
 ## Results
 
-Not too suprising. The more you claim to know about coffee the more likely you 
-are to also claim to know where your coffee comes from.
+Not too suprising. The more you claim to know about coffee the more likely you are to also claim to know where your coffee comes from.
 
-But who are those four coffee geniuses who don't care where their coffee comes
-from?
+But who are those four coffee geniuses who don't care where their coffee comes from?
+
 ```{r}
 #| label: plot highlight
 #| include: true
@@ -186,6 +166,7 @@ p_hilite
 ### Drill Down
 
 I must know more about them
+
 ```{r}
 #| label: investigation
 #| include: true
@@ -202,6 +183,4 @@ kable(
 
 ### Responsible Analysis
 
-Let's remind ourselves that we left sound analysis practices behind at this point.
-We are simply having fun. These are outliers and ZERO conclusions can be drawn
-from digging into their data. So lets just stop here.
+Let's remind ourselves that we left sound analysis practices behind at this point. We are simply having fun. These are outliers and ZERO conclusions can be drawn from digging into their data. So lets just stop here.
