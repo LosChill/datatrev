@@ -49,7 +49,8 @@ coffee_theme <- theme_minimal() +
     plot.background = element_rect(fill = "black", color = NA),
     panel.background = element_rect(fill = "black", color = NA),
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(t = 35, r = 10)
   )
 
 theme_set(coffee_theme)
@@ -256,4 +257,4 @@ kable(expVsource_outliers, "html") %>%
 
 ### Responsible Analysis
 
-Let's remind ourselves that we left sound analysis practices behind at this point. We are simply having fun. These are out-liers and ZERO conclusions can be drawn from digging into their data. So lets just stop here.
+Let's remind ourselves that we left sound analysis practices behind at this point. We are simply having fun. These are outliers and ZERO conclusions can be drawn from digging into their data. So lets just stop here.
