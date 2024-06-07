@@ -20,11 +20,39 @@ Nothing crazy.
 ```{r}
 #| label: load-packages
 #| include: true
+#| message: false
 
 library(tidytuesdayR)
-suppressMessages(library(tidyverse))
+library(tidyverse)
+library(RColorBrewer)
 library(ggforce)
 library(knitr)
+library(kableExtra)
+```
+
+### Theme Setup
+
+Coffee Colors?
+
+```{r}
+brew_colors <- brewer.pal(n = 6, name = "YlOrBr")
+
+coffee_theme <- theme_minimal() +
+  theme(
+    plot.title = element_text(family = "Hot Ink", face = "plain", size = 26, color = brew_colors[1], hjust = 0.5),
+    axis.title.x = element_text(family = "Fira Sans", face = "italic", size = 12, color = brew_colors[1], margin = margin(t = 20, r = 20, b = 20, l = 20, unit = "pt")),
+    axis.title.y = element_text(family = "Fira Sans", face = "italic", size = 12, color = brew_colors[1], margin = margin(t = 20, r = 20, b = 20, l = 20, unit = "pt")),
+    axis.text.x = element_text(family = "Fira Sans", face = "plain", size = 10, color = brew_colors[2], angle = 45, hjust = 1),
+    axis.text.y = element_text(family = "Fira Sans", face = "plain", size = 10, color = brew_colors[2]),
+    legend.title = element_text(family = "Fira Sans", face = "bold", size = 12, color = brew_colors[1]),
+    legend.text = element_text(family = "Fira Sans", face = "plain", size = 10, color = brew_colors[2]),
+    plot.background = element_rect(fill = "black", color = NA),
+    panel.background = element_rect(fill = "black", color = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+theme_set(coffee_theme)
 ```
 
 ### Extract
@@ -67,9 +95,9 @@ clean_tib <- coffee_survey %>%
 
 ## EDA
 
-I saw the multiple-response columns and decided to try to learn more about the best ways to handle these. I could make each cell a vector, turning the column into a list of character vectors, or I could try one-hot encoding. I brought in the caret library and played around with dummy variables enough to get a basic transformation of all the multiple-response columns into multiple single boolean columns for each response.
+I saw the multiple-response columns and decided to try to learn more about the best ways to handle these. I could make each cell a vector, turning the column into a list of character vectors, or I could try one-hot encoding. I brought in the caret library and played around with dummy variables enough to get a basic transformation of all the multiple-response columns into multiple single Boolean columns for each response.
 
-This was messy and I didn't love my function but it was enough to try a Cramers V analysis comparing every column pair for possible correlation. I would love to have found ANY surprise coffee trend that correlated to personal data (like maybe all the cinnamon takers are all unemployed), but the highest chi square was .5 and nothing compelling. So I gave up before I started showing more bias than I had already in wanting to find something.
+This was messy and I didn't love my function but it was enough to try some Chi Square/Cramérs V analysis comparing every column pair for possible correlation. I would love to have found ANY surprise coffee trend that correlated to personal data (like maybe all the cinnamon takers are all unemployed), but the highest Cramérs V value was .5 and nothing compelling. So I gave up before I started showing more bias than I had already in wanting to find something.
 
 I may clean that code up and include it later.
 
@@ -97,6 +125,46 @@ strip_tib <- clean_tib %>%
   drop_na()
 ```
 
+### First Plot
+
+I wanted to plot some kind of two-variable comparison anyway so I chose Age vs Cups per day, just to have a look.
+
+```{r, fig.align='center', out.width='100%'}
+#| label: Age Vs Cups
+#| include: true
+
+# Ordinal ordering
+age_levels = c("<18 years old", "18-24 years old", "25-34 years old",
+               "35-44 years old", "45-54 years old", "55-64 years old",
+               ">65 years old")
+cups_levels = c("less than 1", "1", "2", "3", "4", "more than 4")
+
+ageVcups <- strip_tib %>% 
+  select(age, cups) %>% 
+  mutate(
+    age = factor(age, levels = age_levels, ordered = TRUE),
+    cups = factor(cups, levels = cups_levels, ordered = TRUE)
+  )
+
+ggplot(ageVcups, aes(x = age, fill = cups)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Cups of Coffee per Day by Age Group",
+    x = "Age Group",
+    y = "Percentage",
+    fill = "Number of Cups"  # Custom legend title
+  ) +
+  scale_fill_brewer(palette = "YlOrBr") +
+  scale_y_continuous(labels = ~ paste0(. * 100, "%")) +
+  theme(
+    legend.position = "right",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+```
+No considerable surprise that older age groups tend to show a greater proportion of higher cups-per-day.
+
+
 ### Finding Our Target
 
 What interested me is the self-reported coffee expertise. These questions are such a labyrinth of psychology I don't know what analysts really use them for other than profiling over confidence maybe? I thought Dunning-Kruger did away with the presumed value of self-assessed expertise.
@@ -107,7 +175,7 @@ What other question might be fun to compare to this self-expertise?
 
 Lets take a look. A jitter-box plot will show this nicely.
 
-```{r}
+```{r, fig.align='center', out.width='100%'}
 #| label: plot
 #| include: true
 
@@ -123,13 +191,14 @@ p <- ggplot(expertiseVknowsource_tib, aes(
     color = know_source)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.6) +
   geom_jitter(position = jitter, alpha = 0.2) +
+  scale_fill_brewer(palette = "Pastel2") + # Apply the Brewer palette for fill colors
+  scale_color_brewer(palette = "Pastel2") +
   scale_y_continuous(breaks = seq(0, 10, by = 1)) +
   labs(
-    title = "Distribution of Knowledge of Source by Self-Reported Expertise",
+    title = "Do Coffee Experts Know Their Sources?",
     x = "Do You Know Where Your Coffee Comes From?",
     y = "Claimed Level of Coffee Expertise"
   ) +
-  theme_minimal() +
   theme(legend.position = "none")
 
 p
@@ -141,24 +210,25 @@ Not too suprising. The more you claim to know about coffee the more likely you a
 
 But who are those four coffee geniuses who don't care where their coffee comes from?
 
-```{r}
+```{r, fig.align='center', out.width='100%'}
 #| label: plot highlight
 #| include: true
 
 set.seed(357)
 
 p_hilite <- p +
-  geom_mark_ellipse(aes(fill = know_source,
-                        filter = (know_source == "no") & (expertise == 10),
-                        description = "Experts"),
-                    label.fill = NA,
-                    label.colour = "darkgrey",
-                    label.buffer = unit(0, "mm"),
-                    con.border = "all",
-                    con.colour = "darkgrey",
-                    con.cap = 0,
-                    position = jitter
-  )
+  geom_mark_ellipse(
+    aes(fill = know_source,
+        filter = (know_source == "no") & (expertise == 10), description = '"Experts"'), 
+      label.fill = NA,
+      label.colour = brew_colors[2],
+      label.buffer = unit(0, "mm"),
+      con.border = "all",
+      con.colour = brew_colors[2],
+      con.cap = 0,
+      position = jitter
+  ) +
+  expand_limits(y = c(0,11))
 
 p_hilite
 ```
@@ -173,14 +243,17 @@ I must know more about them
 
 expVsource_outliers <- strip_tib %>%
   mutate(expertise = as.integer(expertise)) %>%
+  select(-submission_id) %>% 
   filter(expertise == 10) %>%
   filter(str_detect(know_source, "no"))
 
-kable(
-  expVsource_outliers
-)
+
+kable(expVsource_outliers, "html") %>%
+  kable_styling() %>%
+  row_spec(0, bold = TRUE, color = brew_colors[1], background = "brown") %>%
+  row_spec(1:nrow(expVsource_outliers), color = brew_colors[6], background = brew_colors[1])
 ```
 
 ### Responsible Analysis
 
-Let's remind ourselves that we left sound analysis practices behind at this point. We are simply having fun. These are outliers and ZERO conclusions can be drawn from digging into their data. So lets just stop here.
+Let's remind ourselves that we left sound analysis practices behind at this point. We are simply having fun. These are out-liers and ZERO conclusions can be drawn from digging into their data. So lets just stop here.
