@@ -102,6 +102,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
 
 </head>
@@ -172,12 +174,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#etl-let" id="toc-etl-let" class="nav-link" data-scroll-target="#etl-let">ETL (LET)</a>
   <ul class="collapse">
   <li><a href="#load-up" id="toc-load-up" class="nav-link" data-scroll-target="#load-up">Load Up</a></li>
+  <li><a href="#theme-setup" id="toc-theme-setup" class="nav-link" data-scroll-target="#theme-setup">Theme Setup</a></li>
   <li><a href="#extract" id="toc-extract" class="nav-link" data-scroll-target="#extract">Extract</a></li>
   <li><a href="#transform" id="toc-transform" class="nav-link" data-scroll-target="#transform">Transform</a></li>
   </ul></li>
   <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda">EDA</a>
   <ul class="collapse">
   <li><a href="#strip-columns" id="toc-strip-columns" class="nav-link" data-scroll-target="#strip-columns">Strip Columns</a></li>
+  <li><a href="#first-plot" id="toc-first-plot" class="nav-link" data-scroll-target="#first-plot">First Plot</a></li>
   <li><a href="#finding-our-target" id="toc-finding-our-target" class="nav-link" data-scroll-target="#finding-our-target">Finding Our Target</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
@@ -221,16 +225,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Nothing crazy.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(tidyverse))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggforce)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggforce)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="theme-setup" class="level3">
+<h3 class="anchored" data-anchor-id="theme-setup">Theme Setup</h3>
+<p>Coffee Colors?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>brew_colors <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">6</span>, <span class="at">name =</span> <span class="st">"YlOrBr"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>coffee_theme <span class="ot">&lt;-</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"Hot Ink"</span>, <span class="at">face =</span> <span class="st">"plain"</span>, <span class="at">size =</span> <span class="dv">26</span>, <span class="at">color =</span> brew_colors[<span class="dv">1</span>], <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"Fira Sans"</span>, <span class="at">face =</span> <span class="st">"italic"</span>, <span class="at">size =</span> <span class="dv">12</span>, <span class="at">color =</span> brew_colors[<span class="dv">1</span>], <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">20</span>, <span class="at">r =</span> <span class="dv">20</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">l =</span> <span class="dv">20</span>, <span class="at">unit =</span> <span class="st">"pt"</span>)),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"Fira Sans"</span>, <span class="at">face =</span> <span class="st">"italic"</span>, <span class="at">size =</span> <span class="dv">12</span>, <span class="at">color =</span> brew_colors[<span class="dv">1</span>], <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">20</span>, <span class="at">r =</span> <span class="dv">20</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">l =</span> <span class="dv">20</span>, <span class="at">unit =</span> <span class="st">"pt"</span>)),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"Fira Sans"</span>, <span class="at">face =</span> <span class="st">"plain"</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> brew_colors[<span class="dv">2</span>], <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"Fira Sans"</span>, <span class="at">face =</span> <span class="st">"plain"</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> brew_colors[<span class="dv">2</span>]),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"Fira Sans"</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">12</span>, <span class="at">color =</span> brew_colors[<span class="dv">1</span>]),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"Fira Sans"</span>, <span class="at">face =</span> <span class="st">"plain"</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> brew_colors[<span class="dv">2</span>]),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">color =</span> <span class="cn">NA</span>),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">color =</span> <span class="cn">NA</span>),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(coffee_theme)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="extract" class="level3">
 <h3 class="anchored" data-anchor-id="extract">Extract</h3>
 <p>I tried the tidytuesdayR::tt_load method and kept getting an error, so we url it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>coffee_survey <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-14/coffee_survey.csv'</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>coffee_survey <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-14/coffee_survey.csv'</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="transform" class="level3">
@@ -238,47 +268,88 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Nice initial cleaning. I decided straight away that my analysis would not be considering open-response answers. I organized the rest of the columns into two categories: multiple response, and factored. Here I factor the latter group. Later I’ll decide what to do with the former.</p>
 <p>Finally I have the pleasure of correcting the “spend” column typo. People need to stop using “spend” as a noun. It is a verb. The noun is “expenditure”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Trim out free-text data, fix "spend" typo </span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "spend" is not a noun, stop trying to make it one</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>clean_tib <span class="ot">&lt;-</span> coffee_survey <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">matches</span>(<span class="st">"other|specify|coffee_a|coffee_b|coffee_c|coffee_d|prefer"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">monthly_expenditure =</span> total_spend) <span class="sc">%&gt;%</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="cf">if</span>(<span class="fu">is.character</span>(.)) <span class="fu">tolower</span>(.) <span class="cf">else</span> .)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(age, cups, favorite, style, strength, roast_level, caffeine,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                  expertise, wfh, monthly_expenditure, taste, know_source,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                  most_paid, most_willing, value_cafe, spent_equipment,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                  value_equipment, gender, education_level, ethnicity_race,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                  employment_status, number_children, political_affiliation</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                  ), as.factor</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                )</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>         )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Trim out free-text data, fix "spend" typo </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "spend" is not a noun, stop trying to make it one</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>clean_tib <span class="ot">&lt;-</span> coffee_survey <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">matches</span>(<span class="st">"other|specify|coffee_a|coffee_b|coffee_c|coffee_d|prefer"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">monthly_expenditure =</span> total_spend) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="cf">if</span>(<span class="fu">is.character</span>(.)) <span class="fu">tolower</span>(.) <span class="cf">else</span> .)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(age, cups, favorite, style, strength, roast_level, caffeine,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                  expertise, wfh, monthly_expenditure, taste, know_source,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                  most_paid, most_willing, value_cafe, spent_equipment,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                  value_equipment, gender, education_level, ethnicity_race,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                  employment_status, number_children, political_affiliation</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                  ), as.factor</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>         )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="eda" class="level2">
 <h2 class="anchored" data-anchor-id="eda">EDA</h2>
-<p>I saw the multiple-response columns and decided to try to learn more about the best ways to handle these. I could make each cell a vector, turning the column into a list of character vectors, or I could try one-hot encoding. I brought in the caret library and played around with dummy variables enough to get a basic transformation of all the multiple-response columns into multiple single boolean columns for each response.</p>
-<p>This was messy and I didn’t love my function but it was enough to try a Cramers V analysis comparing every column pair for possible correlation. I would love to have found ANY surprise coffee trend that correlated to personal data (like maybe all the cinnamon takers are all unemployed), but the highest chi square was .5 and nothing compelling. So I gave up before I started showing more bias than I had already in wanting to find something.</p>
+<p>I saw the multiple-response columns and decided to try to learn more about the best ways to handle these. I could make each cell a vector, turning the column into a list of character vectors, or I could try one-hot encoding. I brought in the caret library and played around with dummy variables enough to get a basic transformation of all the multiple-response columns into multiple single Boolean columns for each response.</p>
+<p>This was messy and I didn’t love my function but it was enough to try some Chi Square/Cramérs V analysis comparing every column pair for possible correlation. I would love to have found ANY surprise coffee trend that correlated to personal data (like maybe all the cinnamon takers are all unemployed), but the highest Cramérs V value was .5 and nothing compelling. So I gave up before I started showing more bias than I had already in wanting to find something.</p>
 <p>I may clean that code up and include it later.</p>
 <section id="strip-columns" class="level3">
 <h3 class="anchored" data-anchor-id="strip-columns">Strip Columns</h3>
 <p>But for now I stripped out all of those multiple-response columns. This allowed me to drop all NA cells. These columns were the questions that many people seem to have just skipped, so stripping them saved more observations.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of columns with multi-value cells</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>hot_columns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"where_drink"</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"brew"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"purchase"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"additions"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"dairy"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"sweetener"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"why_drink"</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                 )</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop multi-value columns before dropping NA cells</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>strip_tib <span class="ot">&lt;-</span> clean_tib <span class="sc">%&gt;%</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">all_of</span>(hot_columns)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of columns with multi-value cells</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>hot_columns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"where_drink"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"brew"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"purchase"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"additions"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"dairy"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"sweetener"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"why_drink"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                 )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop multi-value columns before dropping NA cells</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>strip_tib <span class="ot">&lt;-</span> clean_tib <span class="sc">%&gt;%</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">all_of</span>(hot_columns)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="first-plot" class="level3">
+<h3 class="anchored" data-anchor-id="first-plot">First Plot</h3>
+<p>I wanted to plot some kind of two-variable comparison anyway so I chose Age vs Cups per day, just to have a look.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordinal ordering</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>age_levels <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"&lt;18 years old"</span>, <span class="st">"18-24 years old"</span>, <span class="st">"25-34 years old"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"35-44 years old"</span>, <span class="st">"45-54 years old"</span>, <span class="st">"55-64 years old"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">"&gt;65 years old"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>cups_levels <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"less than 1"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"more than 4"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ageVcups <span class="ot">&lt;-</span> strip_tib <span class="sc">%&gt;%</span> </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, cups) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="fu">factor</span>(age, <span class="at">levels =</span> age_levels, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">cups =</span> <span class="fu">factor</span>(cups, <span class="at">levels =</span> cups_levels, <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ageVcups, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">fill =</span> cups)) <span class="sc">+</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Cups of Coffee per Day by Age Group"</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age Group"</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Percentage"</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Number of Cups"</span>  <span class="co"># Custom legend title</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"YlOrBr"</span>) <span class="sc">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="sc">~</span> <span class="fu">paste0</span>(. <span class="sc">*</span> <span class="dv">100</span>, <span class="st">"%"</span>)) <span class="sc">+</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tidy20_files/figure-html/Age Vs Cups-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>No considerable surprise that older age groups tend to show a greater proportion of higher cups-per-day.</p>
 </section>
 <section id="finding-our-target" class="level3">
 <h3 class="anchored" data-anchor-id="finding-our-target">Finding Our Target</h3>
@@ -287,28 +358,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>“Do you know the source of your coffee”</p>
 <p>Lets take a look. A jitter-box plot will show this nicely.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>expertiseVknowsource_tib <span class="ot">&lt;-</span> strip_tib <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(expertise, know_source)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">357</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>jitter <span class="ot">&lt;-</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">height =</span> <span class="fl">0.5</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(expertiseVknowsource_tib, <span class="fu">aes</span>(</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> know_source, </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">as.numeric</span>(expertise), </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> know_source)) <span class="sc">+</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">position =</span> jitter, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="at">by =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Knowledge of Source by Self-Reported Expertise"</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Do You Know Where Your Coffee Comes From?"</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Claimed Level of Coffee Expertise"</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>expertiseVknowsource_tib <span class="ot">&lt;-</span> strip_tib <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(expertise, know_source)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">357</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>jitter <span class="ot">&lt;-</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">height =</span> <span class="fl">0.5</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(expertiseVknowsource_tib, <span class="fu">aes</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> know_source, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">as.numeric</span>(expertise), </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> know_source)) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">position =</span> jitter, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Pastel2"</span>) <span class="sc">+</span> <span class="co"># Apply the Brewer palette for fill colors</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Pastel2"</span>) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="at">by =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Do Coffee Experts Know Their Sources?"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Do You Know Where Your Coffee Comes From?"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Claimed Level of Coffee Expertise"</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -324,22 +396,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Not too suprising. The more you claim to know about coffee the more likely you are to also claim to know where your coffee comes from.</p>
 <p>But who are those four coffee geniuses who don’t care where their coffee comes from?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">357</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>p_hilite <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_mark_ellipse</span>(<span class="fu">aes</span>(<span class="at">fill =</span> know_source,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">filter =</span> (know_source <span class="sc">==</span> <span class="st">"no"</span>) <span class="sc">&amp;</span> (expertise <span class="sc">==</span> <span class="dv">10</span>),</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">description =</span> <span class="st">"Experts"</span>),</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">label.fill =</span> <span class="cn">NA</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">label.colour =</span> <span class="st">"darkgrey"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">label.buffer =</span> <span class="fu">unit</span>(<span class="dv">0</span>, <span class="st">"mm"</span>),</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">con.border =</span> <span class="st">"all"</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">con.colour =</span> <span class="st">"darkgrey"</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">con.cap =</span> <span class="dv">0</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                    <span class="at">position =</span> jitter</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>p_hilite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">357</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>p_hilite <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_mark_ellipse</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> know_source,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">filter =</span> (know_source <span class="sc">==</span> <span class="st">"no"</span>) <span class="sc">&amp;</span> (expertise <span class="sc">==</span> <span class="dv">10</span>), <span class="at">description =</span> <span class="st">'"Experts"'</span>), </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">label.fill =</span> <span class="cn">NA</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">label.colour =</span> brew_colors[<span class="dv">2</span>],</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">label.buffer =</span> <span class="fu">unit</span>(<span class="dv">0</span>, <span class="st">"mm"</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">con.border =</span> <span class="st">"all"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">con.colour =</span> brew_colors[<span class="dv">2</span>],</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">con.cap =</span> <span class="dv">0</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">position =</span> jitter</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">11</span>))</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>p_hilite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -352,183 +425,159 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="drill-down">Drill Down</h3>
 <p>I must know more about them</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>expVsource_outliers <span class="ot">&lt;-</span> strip_tib <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">expertise =</span> <span class="fu">as.integer</span>(expertise)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(expertise <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(know_source, <span class="st">"no"</span>))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  expVsource_outliers</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>expVsource_outliers <span class="ot">&lt;-</span> strip_tib <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">expertise =</span> <span class="fu">as.integer</span>(expertise)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>submission_id) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(expertise <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(know_source, <span class="st">"no"</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(expVsource_outliers, <span class="st">"html"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> brew_colors[<span class="dv">1</span>], <span class="at">background =</span> <span class="st">"brown"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">row_spec</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(expVsource_outliers), <span class="at">color =</span> brew_colors[<span class="dv">6</span>], <span class="at">background =</span> brew_colors[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<colgroup>
-<col style="width: 3%">
-<col style="width: 4%">
-<col style="width: 1%">
-<col style="width: 5%">
-<col style="width: 3%">
-<col style="width: 4%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 2%">
-<col style="width: 7%">
-<col style="width: 5%">
-<col style="width: 1%">
-<col style="width: 3%">
-<col style="width: 2%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 1%">
-<col style="width: 5%">
-<col style="width: 6%">
-<col style="width: 5%">
-<col style="width: 4%">
-<col style="width: 6%">
-</colgroup>
+<div>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
-<th style="text-align: left;">submission_id</th>
-<th style="text-align: left;">age</th>
-<th style="text-align: left;">cups</th>
-<th style="text-align: left;">favorite</th>
-<th style="text-align: left;">style</th>
-<th style="text-align: left;">strength</th>
-<th style="text-align: left;">roast_level</th>
-<th style="text-align: left;">caffeine</th>
-<th style="text-align: right;">expertise</th>
-<th style="text-align: left;">wfh</th>
-<th style="text-align: left;">monthly_expenditure</th>
-<th style="text-align: left;">taste</th>
-<th style="text-align: left;">know_source</th>
-<th style="text-align: left;">most_paid</th>
-<th style="text-align: left;">most_willing</th>
-<th style="text-align: left;">value_cafe</th>
-<th style="text-align: left;">spent_equipment</th>
-<th style="text-align: left;">value_equipment</th>
-<th style="text-align: left;">gender</th>
-<th style="text-align: left;">education_level</th>
-<th style="text-align: left;">ethnicity_race</th>
-<th style="text-align: left;">employment_status</th>
-<th style="text-align: left;">number_children</th>
-<th style="text-align: left;">political_affiliation</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">age</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">cups</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">favorite</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">style</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">strength</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">roast_level</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">caffeine</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">expertise</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">wfh</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">monthly_expenditure</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">taste</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">know_source</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">most_paid</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">most_willing</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">value_cafe</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">spent_equipment</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">value_equipment</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">gender</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">education_level</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">ethnicity_race</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">employment_status</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">number_children</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(255, 255, 212, 255) !important; background-color: brown !important;">political_affiliation</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">xeb6pd</td>
-<td style="text-align: left;">18-24 years old</td>
-<td style="text-align: left;">2</td>
-<td style="text-align: left;">americano</td>
-<td style="text-align: left;">caramalized</td>
-<td style="text-align: left;">very strong</td>
-<td style="text-align: left;">light</td>
-<td style="text-align: left;">full caffeine</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: left;">i primarily work from home</td>
-<td style="text-align: left;">&lt;$20</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">no</td>
-<td style="text-align: left;">$6-$8</td>
-<td style="text-align: left;">$4-$6</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">$100-$300</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">female</td>
-<td style="text-align: left;">bachelor’s degree</td>
-<td style="text-align: left;">asian/pacific islander</td>
-<td style="text-align: left;">employed full-time</td>
-<td style="text-align: left;">none</td>
-<td style="text-align: left;">no affiliation</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">18-24 years old</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">2</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">americano</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">caramalized</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">very strong</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">light</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">full caffeine</td>
+<td style="text-align: right; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">10</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">i primarily work from home</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">&lt;$20</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">no</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$6-$8</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$4-$6</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$100-$300</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">female</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">bachelor's degree</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">asian/pacific islander</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">employed full-time</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">none</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">no affiliation</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">pabjb0</td>
-<td style="text-align: left;">25-34 years old</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">regular drip coffee</td>
-<td style="text-align: left;">chocolatey</td>
-<td style="text-align: left;">somewhat strong</td>
-<td style="text-align: left;">dark</td>
-<td style="text-align: left;">full caffeine</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: left;">i primarily work from home</td>
-<td style="text-align: left;">$40-$60</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">no</td>
-<td style="text-align: left;">$10-$15</td>
-<td style="text-align: left;">$15-$20</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">$20-$50</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">female</td>
-<td style="text-align: left;">bachelor’s degree</td>
-<td style="text-align: left;">asian/pacific islander</td>
-<td style="text-align: left;">employed full-time</td>
-<td style="text-align: left;">none</td>
-<td style="text-align: left;">no affiliation</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">25-34 years old</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">1</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">regular drip coffee</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">chocolatey</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">somewhat strong</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">dark</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">full caffeine</td>
+<td style="text-align: right; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">10</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">i primarily work from home</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$40-$60</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">no</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$10-$15</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$15-$20</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$20-$50</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">female</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">bachelor's degree</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">asian/pacific islander</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">employed full-time</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">none</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">no affiliation</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">oa0agp</td>
-<td style="text-align: left;">18-24 years old</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">latte</td>
-<td style="text-align: left;">chocolatey</td>
-<td style="text-align: left;">very strong</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">full caffeine</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: left;">i primarily work in person</td>
-<td style="text-align: left;">$60-$80</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">no</td>
-<td style="text-align: left;">$6-$8</td>
-<td style="text-align: left;">$6-$8</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">$50-$100</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">female</td>
-<td style="text-align: left;">bachelor’s degree</td>
-<td style="text-align: left;">asian/pacific islander</td>
-<td style="text-align: left;">employed full-time</td>
-<td style="text-align: left;">none</td>
-<td style="text-align: left;">independent</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">18-24 years old</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">1</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">latte</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">chocolatey</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">very strong</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">medium</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">full caffeine</td>
+<td style="text-align: right; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">10</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">i primarily work in person</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$60-$80</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">no</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$6-$8</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$6-$8</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$50-$100</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">female</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">bachelor's degree</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">asian/pacific islander</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">employed full-time</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">none</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">independent</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">ep8dr2</td>
-<td style="text-align: left;">25-34 years old</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">pourover</td>
-<td style="text-align: left;">chocolatey</td>
-<td style="text-align: left;">somewhat strong</td>
-<td style="text-align: left;">dark</td>
-<td style="text-align: left;">full caffeine</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: left;">i primarily work from home</td>
-<td style="text-align: left;">&lt;$20</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">no</td>
-<td style="text-align: left;">$8-$10</td>
-<td style="text-align: left;">$10-$15</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">$300-$500</td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">male</td>
-<td style="text-align: left;">bachelor’s degree</td>
-<td style="text-align: left;">white/caucasian</td>
-<td style="text-align: left;">employed full-time</td>
-<td style="text-align: left;">none</td>
-<td style="text-align: left;">independent</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">25-34 years old</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">1</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">pourover</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">chocolatey</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">somewhat strong</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">dark</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">full caffeine</td>
+<td style="text-align: right; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">10</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">i primarily work from home</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">&lt;$20</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">no</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$8-$10</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$10-$15</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">$300-$500</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">yes</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">male</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">bachelor's degree</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">white/caucasian</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">employed full-time</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">none</td>
+<td style="text-align: left; color: rgba(153, 52, 4, 255) !important; background-color: rgba(255, 255, 212, 255) !important;">independent</td>
 </tr>
 </tbody>
 </table>
+
+
+</div>
 </div>
 </div>
 </section>
 <section id="responsible-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="responsible-analysis">Responsible Analysis</h3>
-<p>Let’s remind ourselves that we left sound analysis practices behind at this point. We are simply having fun. These are outliers and ZERO conclusions can be drawn from digging into their data. So lets just stop here.</p>
+<p>Let’s remind ourselves that we left sound analysis practices behind at this point. We are simply having fun. These are out-liers and ZERO conclusions can be drawn from digging into their data. So lets just stop here.</p>
 
 
 </section>
