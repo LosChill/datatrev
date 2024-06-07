@@ -1,6 +1,30 @@
 library(tidytuesdayR)
 library(tidyverse)
+library(RColorBrewer)
 library(ggforce)
+library(knitr)
+library(kableExtra)
+
+# Set Theme
+brew_colors <- brewer.pal(n = 6, name = "YlOrBr")
+
+coffee_theme <- theme_minimal() +
+  theme(
+    plot.title = element_text(family = "Hot Ink", face = "plain", size = 26, color = brew_colors[1], hjust = 0.5),
+    axis.title.x = element_text(family = "Fira Sans", face = "italic", size = 12, color = brew_colors[1], margin = margin(t = 20, r = 20, b = 20, l = 20, unit = "pt")),
+    axis.title.y = element_text(family = "Fira Sans", face = "italic", size = 12, color = brew_colors[1], margin = margin(t = 20, r = 20, b = 20, l = 20, unit = "pt")),
+    axis.text.x = element_text(family = "Fira Sans", face = "plain", size = 10, color = brew_colors[2], angle = 45, hjust = 1),
+    axis.text.y = element_text(family = "Fira Sans", face = "plain", size = 10, color = brew_colors[2]),
+    legend.title = element_text(family = "Fira Sans", face = "bold", size = 12, color = brew_colors[1]),
+    legend.text = element_text(family = "Fira Sans", face = "plain", size = 10, color = brew_colors[2]),
+    plot.background = element_rect(fill = "black", color = NA),
+    panel.background = element_rect(fill = "black", color = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(t = 35, r = 10)
+  )
+
+theme_set(coffee_theme)
 
 # Import data
 coffee_survey <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-14/coffee_survey.csv')
@@ -34,6 +58,35 @@ strip_tib <- clean_tib %>%
   select(-all_of(hot_columns)) %>%
   drop_na()
 
+# Age vs Cups
+age_levels = c("<18 years old", "18-24 years old", "25-34 years old",
+               "35-44 years old", "45-54 years old", "55-64 years old",
+               ">65 years old")
+cups_levels = c("less than 1", "1", "2", "3", "4", "more than 4")
+
+ageVcups <- strip_tib %>% 
+  select(age, cups) %>% 
+  mutate(
+    age = factor(age, levels = age_levels, ordered = TRUE),
+    cups = factor(cups, levels = cups_levels, ordered = TRUE)
+  )
+
+ggplot(ageVcups, aes(x = age, fill = cups)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Cups of Coffee per Day by Age Group",
+    x = "Age Group",
+    y = "Percentage",
+    fill = "Number of Cups"  # Custom legend title
+  ) +
+  scale_fill_brewer(palette = "YlOrBr") +
+  scale_y_continuous(labels = ~ paste0(. * 100, "%")) +
+  theme(
+    legend.position = "right",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+# Expertise vs Know Source
 expertiseVknowsource_tib <- strip_tib %>%
   select(expertise, know_source)
 
@@ -41,43 +94,49 @@ set.seed(357)
 jitter <- position_jitter(width = 0.25, height = 0.5)
 
 p <- ggplot(expertiseVknowsource_tib, aes(
-  x = know_source, 
-  y = as.numeric(expertise), 
-  color = know_source)) +
+    x = know_source, 
+    y = as.numeric(expertise), 
+    color = know_source)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.6) +
   geom_jitter(position = jitter, alpha = 0.2) +
+  scale_fill_brewer(palette = "Pastel2") + # Apply the Brewer palette for fill colors
+  scale_color_brewer(palette = "Pastel2") +
   scale_y_continuous(breaks = seq(0, 10, by = 1)) +
   labs(
-    title = "Distribution of Knowledge of Source by Self-Reported Expertise",
+    title = "Do Coffee Experts Know Their Sources?",
     x = "Do You Know Where Your Coffee Comes From?",
     y = "Claimed Level of Coffee Expertise"
   ) +
-  theme_minimal() +
   theme(legend.position = "none")
 
 p
 
 set.seed(357)
+
 p_hilite <- p +
-  geom_mark_ellipse(aes(fill = know_source,
-                        filter = (know_source == "no") & (expertise == 10),
-                        description = "Experts"),
-                    label.fill = NA,
-                    label.colour = "darkgrey",
-                    label.buffer = unit(0, "mm"),
-                    con.border = "all",
-                    con.colour = "darkgrey",
-                    con.cap = 0,
-                    position = jitter
-  )
+  geom_mark_ellipse(
+    aes(fill = know_source,
+        filter = (know_source == "no") & (expertise == 10), description = '"Experts"'), 
+      label.fill = NA,
+      label.colour = brew_colors[2],
+      label.buffer = unit(0, "mm"),
+      con.border = "all",
+      con.colour = brew_colors[2],
+      con.cap = 0,
+      position = jitter
+  ) +
+  expand_limits(y = c(0,11))
 
 p_hilite
 
 expVsource_outliers <- strip_tib %>%
   mutate(expertise = as.integer(expertise)) %>%
+  select(-submission_id) %>% 
   filter(expertise == 10) %>%
   filter(str_detect(know_source, "no"))
 
-kable(
-  expVsource_outliers
-)
+# Print Table
+kable(expVsource_outliers, "html") %>%
+  kable_styling() %>%
+  row_spec(0, bold = TRUE, color = brew_colors[1], background = "brown") %>%
+  row_spec(1:nrow(expVsource_outliers), color = brew_colors[6], background = brew_colors[1])
