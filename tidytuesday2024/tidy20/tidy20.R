@@ -88,44 +88,73 @@ ggplot(ageVcups, aes(x = age, fill = cups)) +
 
 # Expertise vs Know Source
 expertiseVknowsource_tib <- strip_tib %>%
-  select(expertise, know_source)
+  select(expertise, know_source) %>% 
+    mutate(know_source = case_when(
+      tolower(know_source) == "yes" ~ "Yes",
+      tolower(know_source) == "no" ~ "No",
+      TRUE ~ know_source))
 
-set.seed(357)
-jitter <- position_jitter(width = 0.25, height = 0.5)
+evk_lite <- expertiseVknowsource_tib %>% 
+  filter(!(know_source == "No" & expertise == 10))
 
-p <- ggplot(expertiseVknowsource_tib, aes(
+evk_hilite <- expertiseVknowsource_tib %>% 
+  filter(know_source == "No" & expertise == 10)
+
+p <- ggplot(evk_lite, aes(
     x = know_source, 
-    y = as.numeric(expertise), 
-    color = know_source)) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
-  geom_jitter(position = jitter, alpha = 0.2) +
-  scale_fill_brewer(palette = "Pastel2") + # Apply the Brewer palette for fill colors
-  scale_color_brewer(palette = "Pastel2") +
-  scale_y_continuous(breaks = seq(0, 10, by = 1)) +
+    y = as.numeric(expertise))
+  ) +
+  geom_boxplot(
+    data = expertiseVknowsource_tib,
+    outlier.shape = NA, 
+    fill = "brown", 
+    color = "white", 
+    alpha = 0.25
+  ) +
+  geom_point(
+    data = evk_lite,
+    position = position_jitter(seed = 119, width = 0.12, height = 0.69),
+    color = "tan",
+    alpha = 0.25
+  ) +
+  geom_point(
+    data = evk_hilite,
+    position = position_jitter(seed = 119, width = 0.1, height = 0.69),
+    color = "tan",
+    alpha = 0.25
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 10, by = 1)
+  ) +
   labs(
     title = "Do Coffee Experts Know Their Sources?",
     x = "Do You Know Where Your Coffee Comes From?",
     y = "Claimed Level of Coffee Expertise"
   ) +
-  theme(legend.position = "none")
+  theme(
+    legend.position = "none"
+  )
 
-p
-
-set.seed(357)
+hilite <- expertiseVknowsource_tib %>% 
+  filter(know_source == "No" & expertise == 10)
 
 p_hilite <- p +
-  geom_mark_ellipse(
-    aes(fill = know_source,
-        filter = (know_source == "no") & (expertise == 10), description = '"Experts"'), 
-      label.fill = NA,
-      label.colour = brew_colors[2],
-      label.buffer = unit(0, "mm"),
-      con.border = "all",
-      con.colour = brew_colors[2],
-      con.cap = 0,
-      position = jitter
-  ) +
-  expand_limits(y = c(0,11))
+  geom_point(data = hilite, aes(
+    x = know_source, 
+    y = as.numeric(expertise)),
+    position = position_jitter(seed = 119, width = 0.1, height = 0.69), 
+    color = "brown",
+    alpha = .88
+    ) +
+  annotate(
+    "text",
+    x = .75,
+    y = 10,
+    label = "EXPERTS",
+    size = 2.5,
+    #fontface = "italic",
+    color = "brown"
+  )
 
 p_hilite
 
