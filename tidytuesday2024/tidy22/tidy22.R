@@ -4,10 +4,10 @@ library(here)
 library(paletteer)
 
 # Download
-tuesdata <- tidytuesdayR::tt_load(2024, week = 22)
+# tuesdata <- tidytuesdayR::tt_load(2024, week = 22)
 
 # Save
-saveRDS(tuesdata, here("tidytuesday2024", "tidy22", "tuesdata22.rds"))
+# saveRDS(tuesdata, here("tidytuesday2024", "tidy22", "tuesdata22.rds"))
 
 # Import
 tuesdata <- readRDS(here("tidytuesday2024", "tidy22", "tuesdata22.rds"))
@@ -78,10 +78,27 @@ p21_seeds <- planting_2021 %>%
   filter(vegetable != "strawberries")
 
 yield21 <- p21_seeds %>% 
-  inner_join(h20_weight, by = "vegetable") %>% 
+  inner_join(h21_weight, by = "vegetable") %>% 
   mutate(yield = total_weight/total_seeds)
 
 # Yield join
 yields <- yield20 %>% 
-  inner_join(yield21, by = "vegetable")
+  inner_join(
+    yield21, 
+    by = "vegetable",
+    suffix = c(".20", ".21")) %>% 
+  mutate(
+    change_yield = (yield.21 - yield.20) / yield.20,
+    change_weight = (total_weight.21 - total_weight.20) / total_weight.20
+  )
 
+# Plot Yield Change
+ggplot(
+  data = yields,
+  aes(
+    x = reorder(vegetable, -change_yield), 
+    y = change_yield,
+    fill = vegetable)
+  ) +
+  geom_bar(stat = "identity") +
+  paletteer::scale_fill_paletteer_d("khroma::soil") 
