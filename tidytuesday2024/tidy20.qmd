@@ -11,7 +11,7 @@ editor: visual
 
 In my first ever #tidytuesday we are taking a look at a coffee survey. I'll make a note up front that I am prioritizing self education over analytical integrity here. Curiosity is in the drivers seat, so we are going to see where this takes us. Anything I present here is not intended to draw any conclusions or correlations (I tried, and any statistically sound correlation just wasn't there with this data).
 
-## ETL (LET)
+## ELT
 
 ### Load Up
 

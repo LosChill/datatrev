@@ -1,11 +1,47 @@
+---
+title: "20"
+format:
+  html:
+    toc: true
+    toc-location: right
+editor: visual
+---
+## Overview
+
+Second #tidytuesday. We are looking at emissions. Once again I am more interested in correlations than simply presenting totals with pretty shapes. This one left me with more questions than answers, but that is good too.
+
+## Set Up
+
+### Libraries
+Paletteer is amazing for color palettes.
+
+```{r}
+#| label: load packages
+#| include: true
+#| message: false
 library(tidyverse)
 library(tidytuesdayR)
 library(paletteer)
+```
 
+### Import Data
+tt_load worked this time.
+
+```{r}
+#| label: import data
+#| include: true
 tuesdata <- tt_load(2024, week = 21)
 emissions <- tuesdata$emissions
+```
 
-## ggplot theme
+## Theme
+Trying some new theme structures. We'll see if my system is sustainable.
+
+```{r}
+#| label: set theme
+#| include: true
+
+# ggplot theme
 text_color <- "beige"
 fill_color <- "#1f2d36"
 
@@ -28,6 +64,16 @@ theme_update(
   legend.key = element_rect(fill = fill_color, color = NA),
   strip.background = element_rect(fill = fill_color, color = NA)
   )
+```
+
+## EDA
+
+### Units
+This whole data set relies on normalizing units across very different production industries. I wanted to start by assessing what these all were.
+
+```{r}
+#| label: eda
+#| include: true
 
 # How many of each commodity?
 prods <- emissions %>% 
@@ -40,6 +86,14 @@ prod_units <- emissions %>%
   group_by(production_unit) %>% 
   summarize(count = n()) %>% 
   ungroup()
+```
+
+### Are Emissions Rates Standardized?
+I want to check and see if each production unit has a standardized emissions conversion rate. We should see linearity in a production unit vs emissions scatter plot, grouped by units of production.
+
+```{r}
+#| label: correlations
+#| include: true
 
 # Is the relationship between each production_unit and total emissions linear?
 emissions_prodgrp <- emissions %>%
@@ -52,6 +106,17 @@ ggplot(emissions_prodgrp, aes(x = production_value, y = total_emissions_MtCO2e, 
        y = "Amount Produced",
        color = "Production Unit") +
   scale_colour_paletteer_d("LaCroixColoR::PeachPear")
+```
+And this is what we see, barring a few deviations.
+
+This confirms that emissions are calculated based on standardized rates specific to each commodity. Which makes sense considering we have historical data going back earlier than greenhouse gasses were effectively measured.
+
+### Calculate Rates
+Now we can calculate the actual rate for each commodity. This will give us the number used by Carbon Majors in normalizing each commodity to a common unit of emissions (MtCO2). We can plot this like a GCMS plot and see if there are any outliers or minor ridges.
+
+```{r}
+#| label: compare unit slopes
+#| include: true
 
 # What is the linear relationship between each production_unit wrt/ total_emissions?
 unit_slope <- emissions %>% 
@@ -65,6 +130,14 @@ ggplot(unit_slope %>% group_by(production_unit), aes(x = slope, color = producti
        y = "Frequency",
        color = "Production Unit") +
   scale_colour_paletteer_d("LaCroixColoR::PeachPear")
+```
+
+### Coal
+Coal seems to have a number of different conversion rates. My guess is that these vary based on the type of coal. We can group by commodity and show that in a histogram.
+
+```{r}
+#| label: coal
+#| include: true
 
 # Closer look at "Million tonnes/yr"
 mtyr <- unit_slope %>% 
@@ -77,6 +150,14 @@ ggplot(mtyr %>% group_by(commodity), aes(x = slope, fill = commodity)) +
        y = "Frequency",
        fill = "Commodity") +
   scale_fill_paletteer_d("LaCroixColoR::Pamplemousse")
+```
+
+### Cement
+Cement is a bit different. It is one commodity. Grouping by Parent Company does not show a consistent correlation to the different rates.
+
+```{r}
+#| label: cement
+#| include: true
 
 # Closer look at "Million Tonnes CO2"
 mtco2 <- unit_slope %>% 
@@ -87,14 +168,22 @@ ggplot(mtco2 %>% group_by(commodity), aes(x = slope, fill = parent_entity)) +
   labs(title = "Cement Emissions Rate Variance",
        x = "Emissions Rate",
        y = "Frequency",
-       fill = "Commodity") +
+       fill = "Parent Entity") +
   scale_fill_paletteer_d("LaCroixColoR::Pamplemousse")
+```
+My guess is that we may see the variance in emmisions rate of cement correlate with time.
+
+## Results
+
+```{r}
+#| label: cement over time
+#| include: true
 
 # Date correlation for cement slopes
 ggplot(mtco2, aes(x = year, y = slope, color = parent_entity)) +
   geom_point() +
   facet_wrap(~ parent_entity) +
-  labs(title = "Cement Emissions Rate Trend by Entity",
+  labs(title = "Cement Emissions Rate Trend by Parent Entity",
        x = "Cement Emissions Rate",
        y = "Year") +
   scale_x_continuous(breaks = seq(1930, max(mtco2$year), by = 30)) +
@@ -104,3 +193,11 @@ ggplot(mtco2, aes(x = year, y = slope, color = parent_entity)) +
     legend.position = "none",
     panel.border = element_rect(color = "beige", fill = NA, size = 1)
   )
+```
+And that is presicely what we see.
+
+With one major exception...
+
+China Cement's emissions rate has not changed since 1929. Carbon Majors does not provide an explanation for why this number has increased over time for the other five Parent Entities. Nor do they explain why China's has stayed the same.
+
+It appears the standard rate of emissions from cement production was established around 1970 (Taiheiyo Cement) and was steadily upgraded each year. I am assuming this was done by a governing body to which China does not ascribe. The question I am left with is this. Has the actual rate of emissions produced by cement production increased, or simply the rate agreed upon by the scientific community to use in calculating it? If the latter is the case, why has historical data not been recalculated. If the former is the case, why has cement production gotten worse in terms of emissions? And how has China's rate remained flat while the other Parent Entities has steadily increased?
