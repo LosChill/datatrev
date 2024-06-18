@@ -21,6 +21,7 @@ Paletteer is amazing for color palettes.
 #| message: false
 library(tidyverse)
 library(tidytuesdayR)
+library(here)
 library(paletteer)
 ```
 
@@ -30,8 +31,7 @@ tt_load worked this time.
 ```{r}
 #| label: import data
 #| include: true
-tuesdata <- tt_load(2024, week = 21)
-emissions <- tuesdata$emissions
+emissions <- readRDS(here("tidytuesday2024", "tidy21", "emissions.rds"))
 ```
 
 ## Theme

@@ -1,9 +1,14 @@
 library(tidyverse)
 library(tidytuesdayR)
 library(paletteer)
+library(here)
 
 tuesdata <- tt_load(2024, week = 21)
 emissions <- tuesdata$emissions
+
+saveRDS(emissions, here("tidytuesday2024", "tidy21", "emissions.rds"))
+
+emissions <- readRDS(here("tidytuesday2024", "tidy21", "emissions.rds"))
 
 ## ggplot theme
 text_color <- "beige"
@@ -87,14 +92,14 @@ ggplot(mtco2 %>% group_by(commodity), aes(x = slope, fill = parent_entity)) +
   labs(title = "Cement Emissions Rate Variance",
        x = "Emissions Rate",
        y = "Frequency",
-       fill = "Commodity") +
+       fill = "Parent Entity") +
   scale_fill_paletteer_d("LaCroixColoR::Pamplemousse")
 
 # Date correlation for cement slopes
 ggplot(mtco2, aes(x = year, y = slope, color = parent_entity)) +
   geom_point() +
   facet_wrap(~ parent_entity) +
-  labs(title = "Cement Emissions Rate Trend by Entity",
+  labs(title = "Cement Emissions Rate Trend by Parent Entity",
        x = "Cement Emissions Rate",
        y = "Year") +
   scale_x_continuous(breaks = seq(1930, max(mtco2$year), by = 30)) +
@@ -104,3 +109,4 @@ ggplot(mtco2, aes(x = year, y = slope, color = parent_entity)) +
     legend.position = "none",
     panel.border = element_rect(color = "beige", fill = NA, size = 1)
   )
+
