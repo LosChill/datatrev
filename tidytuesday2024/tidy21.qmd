@@ -1,11 +1,12 @@
 ---
-title: "20"
+title: "21"
 format:
   html:
     toc: true
     toc-location: right
 editor: visual
 ---
+
 ## Overview
 
 Second #tidytuesday. We are looking at emissions. Once again I am more interested in correlations than simply presenting totals with pretty shapes. This one left me with more questions than answers, but that is good too.
@@ -13,6 +14,7 @@ Second #tidytuesday. We are looking at emissions. Once again I am more intereste
 ## Set Up
 
 ### Libraries
+
 Paletteer is amazing for color palettes.
 
 ```{r}
@@ -26,6 +28,7 @@ library(paletteer)
 ```
 
 ### Import Data
+
 tt_load worked this time.
 
 ```{r}
@@ -35,6 +38,7 @@ emissions <- readRDS(here("tidytuesday2024", "tidy21", "emissions.rds"))
 ```
 
 ## Theme
+
 Trying some new theme structures. We'll see if my system is sustainable.
 
 ```{r}
@@ -45,7 +49,9 @@ Trying some new theme structures. We'll see if my system is sustainable.
 text_color <- "beige"
 fill_color <- "#1f2d36"
 
-theme_set(theme_minimal(base_family = "Liberation Mono", base_size = 12))
+theme_set(theme_minimal(
+  base_family = "Liberation Mono", 
+  base_size = 12))
 
 theme_update(
   panel.grid.major = element_blank(), 
@@ -69,6 +75,7 @@ theme_update(
 ## EDA
 
 ### Units
+
 This whole data set relies on normalizing units across very different production industries. I wanted to start by assessing what these all were.
 
 ```{r}
@@ -89,9 +96,10 @@ prod_units <- emissions %>%
 ```
 
 ### Are Emissions Rates Standardized?
+
 I want to check and see if each production unit has a standardized emissions conversion rate. We should see linearity in a production unit vs emissions scatter plot, grouped by units of production.
 
-```{r}
+```{r, fig.align='center', out.width='100%'}
 #| label: correlations
 #| include: true
 
@@ -99,22 +107,33 @@ I want to check and see if each production unit has a standardized emissions con
 emissions_prodgrp <- emissions %>%
   group_by(production_unit)
 
-ggplot(emissions_prodgrp, aes(x = production_value, y = total_emissions_MtCO2e, color = production_unit)) +
+ggplot(
+  emissions_prodgrp, 
+  aes(
+    x = production_value, 
+    y = total_emissions_MtCO2e, 
+    color = production_unit
+    )
+  ) +
   geom_point() +
-  labs(title = "Emissions Rate by Production Unit",
-       x = "Total Emissions",
-       y = "Amount Produced",
-       color = "Production Unit") +
+  labs(
+    title = "Emissions Rate by Production Unit",
+    x = "Total Emissions",
+    y = "Amount Produced",
+    color = "Production Unit"
+    ) +
   scale_colour_paletteer_d("LaCroixColoR::PeachPear")
 ```
+
 And this is what we see, barring a few deviations.
 
 This confirms that emissions are calculated based on standardized rates specific to each commodity. Which makes sense considering we have historical data going back earlier than greenhouse gasses were effectively measured.
 
 ### Calculate Rates
+
 Now we can calculate the actual rate for each commodity. This will give us the number used by Carbon Majors in normalizing each commodity to a common unit of emissions (MtCO2). We can plot this like a GCMS plot and see if there are any outliers or minor ridges.
 
-```{r}
+```{r, fig.align='center', out.width='100%'}
 #| label: compare unit slopes
 #| include: true
 
@@ -123,19 +142,27 @@ unit_slope <- emissions %>%
   mutate(slope = total_emissions_MtCO2e/production_value) 
 
 # What is the variance of this slope wrt/ each production_unit
-ggplot(unit_slope %>% group_by(production_unit), aes(x = slope, color = production_unit)) +
+ggplot(
+  unit_slope %>% group_by(production_unit), 
+  aes(
+    x = slope, 
+    color = production_unit)
+  ) +
   geom_freqpoly(binwidth = .01) +
-  labs(title = "Variance in Emissions Rate",
-       x = "Emissions Rate",
-       y = "Frequency",
-       color = "Production Unit") +
+  labs(
+    title = "Variance in Emissions Rate",
+    x = "Cement Emissions Rate",
+    y = "Frequency",
+    color = "Production Unit"
+    ) +
   scale_colour_paletteer_d("LaCroixColoR::PeachPear")
 ```
 
 ### Coal
+
 Coal seems to have a number of different conversion rates. My guess is that these vary based on the type of coal. We can group by commodity and show that in a histogram.
 
-```{r}
+```{r, fig.align='center', out.width='100%'}
 #| label: coal
 #| include: true
 
@@ -143,19 +170,29 @@ Coal seems to have a number of different conversion rates. My guess is that thes
 mtyr <- unit_slope %>% 
   filter(production_unit == "Million tonnes/yr")
 
-ggplot(mtyr %>% group_by(commodity), aes(x = slope, fill = commodity)) +
-  geom_histogram(color = "beige", binwidth = .1) +
-  labs(title = "Coal Emission Rate Variance",
-       x = "Coal Emissions Rate",
-       y = "Frequency",
-       fill = "Commodity") +
+ggplot(
+  mtyr %>% group_by(commodity), 
+  aes(x = slope, 
+      fill = commodity)
+  ) +
+  geom_histogram(
+    color = "beige", 
+    binwidth = .1
+    ) +
+  labs(
+    title = "Coal Emission Rate Variance",
+    x = "Coal Emissions Rate",
+    y = "Frequency",
+    fill = "Commodity"
+    ) +
   scale_fill_paletteer_d("LaCroixColoR::Pamplemousse")
 ```
 
 ### Cement
+
 Cement is a bit different. It is one commodity. Grouping by Parent Company does not show a consistent correlation to the different rates.
 
-```{r}
+```{r, fig.align='center', out.width='100%'}
 #| label: cement
 #| include: true
 
@@ -163,38 +200,61 @@ Cement is a bit different. It is one commodity. Grouping by Parent Company does 
 mtco2 <- unit_slope %>% 
   filter(production_unit == "Million Tonnes CO2")
 
-ggplot(mtco2 %>% group_by(commodity), aes(x = slope, fill = parent_entity)) +
-  geom_histogram(color = "beige", binwidth = .01) +
-  labs(title = "Cement Emissions Rate Variance",
-       x = "Emissions Rate",
-       y = "Frequency",
-       fill = "Parent Entity") +
+ggplot(
+  mtco2 %>% group_by(commodity), 
+  aes(
+    x = slope, 
+    fill = parent_entity)
+  ) +
+  geom_histogram(
+    color = "beige", 
+    binwidth = .01
+    ) +
+  labs(
+    title = "Cement Emissions Rate Variance",
+    x = "Emissions Rate",
+    y = "Frequency",
+    fill = "Parent Entity"
+    ) +
   scale_fill_paletteer_d("LaCroixColoR::Pamplemousse")
 ```
+
 My guess is that we may see the variance in emmisions rate of cement correlate with time.
 
 ## Results
 
-```{r}
+```{r, fig.align='center', out.width='100%'}
 #| label: cement over time
 #| include: true
 
 # Date correlation for cement slopes
-ggplot(mtco2, aes(x = year, y = slope, color = parent_entity)) +
+ggplot(
+  mtco2, 
+  aes(
+    x = year, 
+    y = slope, 
+    color = parent_entity)
+  ) +
   geom_point() +
   facet_wrap(~ parent_entity) +
-  labs(title = "Cement Emissions Rate Trend by Parent Entity",
-       x = "Cement Emissions Rate",
-       y = "Year") +
-  scale_x_continuous(breaks = seq(1930, max(mtco2$year), by = 30)) +
+  labs(
+    title = "Cement Emissions Rate Trend by Parent Entity",
+    x = "Cement Emissions Rate",
+    y = "Year"
+    ) +
+  scale_x_continuous(
+    breaks = seq(1930, max(mtco2$year), by = 30)) +
   scale_color_paletteer_d("tvthemes::Opal") +
   theme(
     axis.text.x = element_text(angle = 90, hjust = 1),
     legend.position = "none",
-    panel.border = element_rect(color = "beige", fill = NA, size = 1)
+    panel.border = element_rect(
+      color = "beige", 
+      fill = NA, linewidth = 1)
   )
 ```
-And that is presicely what we see.
+
+And that is precisely what we see.
 
 With one major exception...
 
