@@ -12,7 +12,10 @@ body {
 
 
 // Directly applying background color to the specified elements
-html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--not-top.headroom--pinned nav.quarto-secondary-nav, html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--not-top.headroom--unpinned nav.quarto-secondary-nav, html body.nav-sidebar.floating.quarto-dark div#quarto-content.quarto-container.page-columns.page-rows-contents.page-layout-article nav#quarto-sidebar.sidebar.collapse.collapse-horizontal.quarto-sidebar-collapse-item.sidebar-navigation.floating.overflow-auto,
-html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--pinned.headroom--top nav.quarto-secondary-nav {
+html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--not-top.headroom--pinned nav.quarto-secondary-nav, 
+html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--not-top.headroom--unpinned nav.quarto-secondary-nav, 
+html body.nav-sidebar.floating.quarto-dark div#quarto-content.quarto-container.page-columns.page-rows-contents.page-layout-article nav#quarto-sidebar.sidebar.collapse.collapse-horizontal.quarto-sidebar-collapse-item.sidebar-navigation.floating.overflow-auto,
+html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--pinned.headroom--top nav.quarto-secondary-nav, 
+html body.nav-sidebar.floating.fullcontent.quarto-dark header#quarto-header.headroom.fixed-top.headroom--top.headroom--bottom nav.quarto-secondary-nav {
   background-color: $bs-primary !important;
 }
