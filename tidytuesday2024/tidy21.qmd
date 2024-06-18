@@ -151,7 +151,7 @@ ggplot(
   geom_freqpoly(binwidth = .01) +
   labs(
     title = "Variance in Emissions Rate",
-    x = "Cement Emissions Rate",
+    x = "Emissions Rate",
     y = "Frequency",
     color = "Production Unit"
     ) +
@@ -181,7 +181,7 @@ ggplot(
     ) +
   labs(
     title = "Coal Emission Rate Variance",
-    x = "Coal Emissions Rate",
+    x = "Emissions Rate",
     y = "Frequency",
     fill = "Commodity"
     ) +
