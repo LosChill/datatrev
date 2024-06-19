@@ -3,14 +3,15 @@
 $universal-background: #0e1a20 !default;
 $font-family-sans-serif: Helvetica !default;
 $code-block-bg: #2c3e50 !default;
-$bs-primary: #C29A4A !default;
+
+// $bs-primary: #C29A4A !default;
 
 /*-- scss:rules --*/
 body {
   background: $universal-background !important;  // Set the background color
 }
 
-
+/*
 // Directly applying background color to the specified elements
 html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--not-top.headroom--pinned nav.quarto-secondary-nav, 
 html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-top.headroom--not-bottom.headroom--not-top.headroom--unpinned nav.quarto-secondary-nav, 
@@ -19,3 +20,4 @@ html body.nav-sidebar.floating.quarto-dark header#quarto-header.headroom.fixed-t
 html body.nav-sidebar.floating.fullcontent.quarto-dark header#quarto-header.headroom.fixed-top.headroom--top.headroom--bottom nav.quarto-secondary-nav {
   background-color: $bs-primary !important;
 }
+*/

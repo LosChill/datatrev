@@ -18,7 +18,8 @@ website:
   sidebar:
     style: "floating"
     alignment: "left"
-    background: primary
+    background: none
+    border: true
     search: false
     contents:
       - section: "Tidy Tuesday 2024"
