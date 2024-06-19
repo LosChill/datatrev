@@ -5,16 +5,17 @@ library(patchwork)
 library(scales)
 library(paletteer)
 
-# Download
+# Load ----
+## Download ----
 # tuesdata <- tidytuesdayR::tt_load(2024, week = 22)
 
-# Save
+## Save ----
 # saveRDS(tuesdata, here("tidytuesday2024", "tidy22", "tuesdata22.rds"))
 
-# Import
+## Import ----
 tuesdata <- readRDS(here::here("tidytuesday2024", "tidy22", "tuesdata22.rds"))
 
-# Account
+## Account ----
 harvest_2020 <- tuesdata$harvest_2020
 harvest_2021 <- tuesdata$harvest_2021
 planting_2020 <- tuesdata$planting_2020
@@ -22,8 +23,8 @@ planting_2021 <- tuesdata$planting_2021
 spending_2020 <- tuesdata$spending_2020
 spending_2021 <- tuesdata$spending_2021
 
-# Theme
-# Colors
+# Theme ----
+## Colors ----
 text_color <- "beige"
 fill_color <- "#1f2d36"
 
@@ -32,7 +33,7 @@ palette <- paletteer::paletteer_d("ggsci::default_jama")
 palette_green18 <- paletteer::paletteer_c("ggthemes::Temperature Diverging", n = 18)
 palette_green25 <- paletteer::paletteer_c("ggthemes::Temperature Diverging", n = 25)
 
-# Script theme
+## Script theme ----
 theme_set(theme_minimal(
   base_family = "Liberation Mono", 
   base_size = 12))
@@ -55,7 +56,8 @@ theme_update(
   strip.background = element_rect(fill = fill_color, color = NA)
 )
 
-# Yield 2020
+# EDA ----
+## Yield 2020 ----
 h20_weight <- harvest_2020 %>% 
   group_by(vegetable) %>% 
   summarize(total_weight = sum(weight)) %>% 
@@ -72,7 +74,7 @@ yield20 <- p20_seeds %>%
   inner_join(h20_weight, by = "vegetable") %>% 
   mutate(yield = total_weight/total_seeds)
 
-# Yield 2020 plot
+### Yield 2020 plot ----
 ggplot(data = yield20) +
   geom_bar(
     aes(
@@ -88,8 +90,7 @@ ggplot(data = yield20) +
     fill = brown
     ) +
   scale_y_continuous(
-    name = "Total Weight",
-    limits = c(-60000, 200000)
+    limits = c(-60000, 180000)
     ) +
   geom_text(
     aes(
@@ -112,32 +113,43 @@ ggplot(data = yield20) +
     vjust = .5,
     hjust = 1.5,
     angle = 90
-  ) +
+    ) +
+  coord_cartesian(clip = "off") +
+  labs(
+    title = "Yield from Seed Comparison",
+    subtitle = "2020"
+    ) +
   annotate(
     "text", 
-    x = 0.5, 
-    y = 130000, 
-    label = paste0("Total Weight Yield ", strrep("-", 100)),
+    x = -Inf, 
+    y = 0, 
+    label = "Total Weight Yield (kg)",
     color = "beige",
-    hjust = 0) +
+    angle = 90,
+    hjust = -.2,
+    vjust = -1
+    ) +
   annotate(
     "text", 
-    x = 25.5, 
-    y = - 50000, 
-    label = paste0(strrep("-", 120), " Total Seeds Planted"),
+    x = -Inf, 
+    y = 0, 
+    label = "Total Seeds Planted",
     color = "beige",
-    hjust = 1) +
+    angle = 90,
+    hjust = 1.1,
+    vjust = -1) +
   theme(
     axis.text.x = element_text(angle = 90, hjust = 0, vjust = 0.5),
     axis.text.y = element_blank(),
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
+    plot.margin = margin(10, 10, 10, 30),
     legend.position="none"
   ) +
   scale_fill_manual(values = palette_green25) +
   scale_color_manual(values = palette_green25)
 
-# Yield 2021
+## Yield 2021 ----
 h21_weight <- harvest_2021 %>% 
   group_by(vegetable) %>% 
   summarize(total_weight = sum(weight)) %>% 
@@ -154,7 +166,7 @@ yield21 <- p21_seeds %>%
   inner_join(h21_weight, by = "vegetable") %>% 
   mutate(yield = total_weight/total_seeds)
 
-# Yield 2021 plot
+### Yield 2021 plot ----
 ggplot(data = yield21) +
   geom_bar(
     aes(
@@ -170,8 +182,7 @@ ggplot(data = yield21) +
     fill = brown
   ) +
   scale_y_continuous(
-    name = "Total Weight",
-    limits = c(-60000, 200000)
+    limits = c(-60000, 180000)
   ) +
   geom_text(
     aes(
@@ -195,31 +206,55 @@ ggplot(data = yield21) +
     hjust = 1.5,
     angle = 90
   ) +
+  coord_cartesian(clip = "off") +
+  labs(
+    title = "Yield from Seed Comparison",
+    subtitle = "2021"
+  ) +
   annotate(
     "text", 
-    x = 0.5, 
-    y = 130000, 
-    label = paste0("Total Weight Yield ", strrep("-", 100)),
+    x = -Inf, 
+    y = 0, 
+    label = "Total Weight Yield (kg)",
     color = "beige",
-    hjust = 0) +
+    angle = 90,
+    hjust = -.2,
+    vjust = -1
+  ) +
   annotate(
     "text", 
-    x = 25.5, 
-    y = - 50000, 
-    label = paste0(strrep("-", 120), " Total Seeds Planted"),
+    x = -Inf, 
+    y = 0, 
+    label = "Total Seeds Planted",
     color = "beige",
-    hjust = 1) +
+    angle = 90,
+    hjust = 1.1,
+    vjust = -1) +
   theme(
     axis.text.x = element_text(angle = 90, hjust = 0, vjust = 0.5),
     axis.text.y = element_blank(),
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
+    plot.margin = margin(10, 10, 10, 30),
     legend.position="none"
   ) +
   scale_fill_manual(values = palette_green25) +
   scale_color_manual(values = palette_green25)
 
-# Plot Yield Change
+## Yields Change ----
+yields <- inner_join(
+  yield20, 
+  yield21, 
+  by = "vegetable", 
+  suffix = c(".20", ".21")
+  ) %>% 
+  group_by(vegetable) %>% 
+  ungroup() %>% 
+  mutate(
+    change_yield = (yield.21 - yield.20) / yield.20
+  )
+
+### Yield Change ----
 ggplot(
   data = yields,
   aes(
@@ -236,7 +271,6 @@ ggplot(
   labs(
     title = "Difference in Yield",
     subtitle = "2020 v 2021",
-    x = "Vegetable",
     y = "Percent Change"
     ) +
   theme(
@@ -245,6 +279,7 @@ ggplot(
     axis.text.x = element_text(
       angle = 90, 
       hjust = 1, 
-      vjust = .5)
+      vjust = .5),
+    axis.title.x = element_blank()
     ) +
   scale_fill_manual(values = palette_green18)
