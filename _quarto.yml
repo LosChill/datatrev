@@ -26,5 +26,6 @@ website:
         contents:
           - tidytuesday2024/tidy20.qmd
           - tidytuesday2024/tidy21.qmd
+          - tidytuesday2024/tidy22.qmd
       - text: "Back to GitHub"
         href: "https://github.com/LosChill/"
