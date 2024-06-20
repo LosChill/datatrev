@@ -18,7 +18,7 @@ website:
   sidebar:
     style: "floating"
     alignment: "left"
-    background: none
+    background: "secondary"
     border: true
     search: false
     contents:
