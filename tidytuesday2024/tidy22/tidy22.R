@@ -71,7 +71,8 @@ p20_seeds <- planting_2020 %>%
 
 yield20 <- p20_seeds %>% 
   inner_join(h20_weight, by = "vegetable") %>% 
-  mutate(yield = total_weight/total_seeds)
+  mutate(yield = total_weight/total_seeds) %>% 
+  mutate(vegetable = tolower(vegetable))
 
 ### Yield 2020 plot ----
 ggplot(data = yield20) +
@@ -122,7 +123,7 @@ ggplot(data = yield20) +
     "text", 
     x = -Inf, 
     y = 0, 
-    label = "Total Seeds Planted | Total Weight Yield (kg)",
+    label = "← Total Seeds Planted | Total Weight Yield (kg) →",
     color = "beige",
     angle = 90,
     hjust = .47,
@@ -205,7 +206,7 @@ ggplot(data = yield21) +
     "text", 
     x = -Inf, 
     y = 0, 
-    label = "Total Seeds Planted | Total Weight Yield (kg)",
+    label = "← Total Seeds Planted | Total Weight Yield (kg) →",
     color = "beige",
     angle = 90,
     hjust = .47,
