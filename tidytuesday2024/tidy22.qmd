@@ -11,7 +11,7 @@ editor: visual
 
 ## Overview
 
-Let's dig in to #tidytuesday number three for me.
+Let's dig in to some plant data for this week's #tidytuesday.
 
 ## Set Up
 
@@ -31,6 +31,7 @@ library(paletteer)
 
 ### Import Data
 
+Here I am actually importing from a saved csv under the hood. Ran into query limits using the direct import from github every time while I was in testing. But I'm showing the original import script with eval:false for this record. I think I'll stick with this from now on.
 ```{r}
 #| label: download_data
 #| include: true
@@ -62,6 +63,7 @@ spending_2021 <- tuesdata$spending_2021
 
 ### Colors
 
+Trying to use earth-tones. I considered creating a table and manually assigning each produce a color that made sense. But I am planning to use labels anyway rather than relying on colors as a legend so I skipped the extra work.
 ```{r}
 #| label: colors
 #| include: true
@@ -106,10 +108,16 @@ theme_update(
 
 ## EDA
 
+I was initially curious about comparing plot performance. Planting data included which plot the seeds were planted in, but that data was absent from harvesting numbers. So that was out. I turned my attention to yields. We could compare the weight harvested of each plant from 2020 to 2021, but what we really want to know is the yield. For this I want to see the total weight grown from the number of seeds. 
+
+This got me thinking about biological efficiency and wondering what plants grow more mass with fewer seeds. I know creating seeds is a cost-benefit balance for the plant. Create many low-value resource-saving seeds, or fewer resource-intensive seeds that each have a higher chance of germination. But we don't have seed weight data so that will be for another day.
+
+For now though we can look at how many seeds it takes to grow plant mass for each type of produce. Down the line we can use this yield to more accurately compare 2020 vs 2021 accounting for differences in the number of seeds planted.
+
 ### Yield 2020
 
 ```{r}
-#| label: yeild_2020
+#| label: yield_2020
 #| include: true
 
 h20_weight <- harvest_2020 %>% 
@@ -130,6 +138,12 @@ yield20 <- p20_seeds %>%
 ```
 
 ### Yield 2020 Plot
+
+For these plots I wanted to make the seed bars look like they were in the dirt, and the produce mass bars look like they were sprouting out of the dirt. I tried a couple of plot-arrangement libraries like Cowplot and Patchwork, to align two separate plots over a shared x-axis at y = 0. This was a mess. Somewhere in my theme there were margins or padding around the panels that would not go away and I could not for the life of me get two plots to lock together absolutely with no gaps.
+
+So my solution was to just plot two geom_bar plots within a single ggplot argument, invert the seeds plot, and custom scale and label my y-axis. Got the job done.
+
+The remaining issue was scale. The y-axis had to be adjusted by a factor of 10 to allow for the different units (kg and seeds) to coexist in a way that allowed the bars to be visualized. Ultimately this didn't appear to be a problem as the visual unit comparison does not rely on a direct ratio between each plant's seed number and weight, but rather a set ratio across all observations, so I was satisfied with adjusting this for aesthetics.
 
 ```{r, fig.align='center', out.width='100%'}
 #| label: yield_2020_plot
@@ -298,7 +312,15 @@ ggplot(data = yield21) +
 
 ## Results
 
+I considered normalizing the data here to a set weight and plotting a single bar chart, but the fun was in seeing seed numbers AND harvest weight numbers as stacked bars. So I left it as is.
+
+What we see is a spectrum of plant adaptation. It is not surprising that the plants that grow more mass from fewer seeds have the heavier fruit. For these plants, the fruiting bodies are the currency by which the plants make a deal with their animal seed distributors. These heavy fruits come as a food offering and as such their seeds must survive animal digestive tracts. Compare this with the other end of the spectrum where you see less investment into fruiting bodies. These plants may typically produce more, smaller, less resource-intensive seeds and rely instead on things like wind or gravity for propagation.
+
+This is a very broad generalization, but it seems to fit with our trends.
+
 ### Yields Change
+
+Now we can compare 2020 and 2021 harvest yields with more accuracy than simply comparing the sum of each plants weight. Let's consider the difference in yield as a percent change in yield from 2020 to 2021.
 
 ```{r}
 #| label: yields_change
@@ -354,3 +376,5 @@ ggplot(
 ```
 
 ## Analysis
+
+2021 was a down year from 2020 for much of the garden based on yield from seeds, but Peppers and Basil were loving life. Hope you are too.
