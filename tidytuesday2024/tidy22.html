@@ -235,7 +235,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Let’s dig in to #tidytuesday number three for me.</p>
+<p>Let’s dig in to some plant data for this week’s #tidytuesday.</p>
 </section>
 <section id="set-up" class="level2">
 <h2 class="anchored" data-anchor-id="set-up">Set Up</h2>
@@ -251,6 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="import-data" class="level3">
 <h3 class="anchored" data-anchor-id="import-data">Import Data</h3>
+<p>Here I am actually importing from a saved csv under the hood. Ran into query limits using the direct import from github every time while I was in testing. But I’m showing the original import script with eval:false for this record. I think I’ll stick with this from now on.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="dv">2024</span>, <span class="at">week =</span> <span class="dv">22</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -268,6 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="theme">Theme</h2>
 <section id="colors" class="level3">
 <h3 class="anchored" data-anchor-id="colors">Colors</h3>
+<p>Trying to use earth-tones. I considered creating a table and manually assigning each produce a color that made sense. But I am planning to use labels anyway rather than relying on colors as a legend so I skipped the extra work.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>text_color <span class="ot">&lt;-</span> <span class="st">"beige"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fill_color <span class="ot">&lt;-</span> <span class="st">"#1f2d36"</span></span>
@@ -307,6 +309,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="eda" class="level2">
 <h2 class="anchored" data-anchor-id="eda">EDA</h2>
+<p>I was initially curious about comparing plot performance. Planting data included which plot the seeds were planted in, but that data was absent from harvesting numbers. So that was out. I turned my attention to yields. We could compare the weight harvested of each plant from 2020 to 2021, but what we really want to know is the yield. For this I want to see the total weight grown from the number of seeds.</p>
+<p>This got me thinking about biological efficiency and wondering what plants grow more mass with fewer seeds. I know creating seeds is a cost-benefit balance for the plant. Create many low-value resource-saving seeds, or fewer resource-intensive seeds that each have a higher chance of germination. But we don’t have seed weight data so that will be for another day.</p>
+<p>For now though we can look at how many seeds it takes to grow plant mass for each type of produce. Down the line we can use this yield to more accurately compare 2020 vs 2021 accounting for differences in the number of seeds planted.</p>
 <section id="yield-2020" class="level3">
 <h3 class="anchored" data-anchor-id="yield-2020">Yield 2020</h3>
 <div class="cell">
@@ -329,6 +334,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="yield-2020-plot" class="level3">
 <h3 class="anchored" data-anchor-id="yield-2020-plot">Yield 2020 Plot</h3>
+<p>For these plots I wanted to make the seed bars look like they were in the dirt, and the produce mass bars look like they were sprouting out of the dirt. I tried a couple of plot-arrangement libraries like Cowplot and Patchwork, to align two separate plots over a shared x-axis at y = 0. This was a mess. Somewhere in my theme there were margins or padding around the panels that would not go away and I could not for the life of me get two plots to lock together absolutely with no gaps.</p>
+<p>So my solution was to just plot two geom_bar plots within a single ggplot argument, invert the seeds plot, and custom scale and label my y-axis. Got the job done.</p>
+<p>The remaining issue was scale. The y-axis had to be adjusted by a factor of 10 to allow for the different units (kg and seeds) to coexist in a way that allowed the bars to be visualized. Ultimately this didn’t appear to be a problem as the visual unit comparison does not rely on a direct ratio between each plant’s seed number and weight, but rather a set ratio across all observations, so I was satisfied with adjusting this for aesthetics.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> yield20) <span class="sc">+</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(</span>
@@ -502,8 +510,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>I considered normalizing the data here to a set weight and plotting a single bar chart, but the fun was in seeing seed numbers AND harvest weight numbers as stacked bars. So I left it as is.</p>
+<p>What we see is a spectrum of plant adaptation. It is not surprising that the plants that grow more mass from fewer seeds have the heavier fruit. For these plants, the fruiting bodies are the currency by which the plants make a deal with their animal seed distributors. These heavy fruits come as a food offering and as such their seeds must survive animal digestive tracts. Compare this with the other end of the spectrum where you see less investment into fruiting bodies. These plants may typically produce more, smaller, less resource-intensive seeds and rely instead on things like wind or gravity for propagation.</p>
+<p>This is a very broad generalization, but it seems to fit with our trends.</p>
 <section id="yields-change" class="level3">
 <h3 class="anchored" data-anchor-id="yields-change">Yields Change</h3>
+<p>Now we can compare 2020 and 2021 harvest yields with more accuracy than simply comparing the sum of each plants weight. Let’s consider the difference in yield as a percent change in yield from 2020 to 2021.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>yields <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  yield20, </span>
@@ -561,6 +573,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="analysis" class="level2">
 <h2 class="anchored" data-anchor-id="analysis">Analysis</h2>
+<p>2021 was a down year from 2020 for much of the garden based on yield from seeds, but Peppers and Basil were loving life. Hope you are too.</p>
 
 
 </section>
