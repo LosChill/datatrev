@@ -3,6 +3,7 @@ library(tidyverse)
 library(here)
 library(paletteer)
 library(ggwordcloud)
+library(ggpmisc)
 library(stringr)
 
 # Import ----
@@ -34,14 +35,23 @@ theme_update(
   strip.text = element_text(color = text_color),
   axis.title.x = element_text(margin = margin(10, 0, 0, 0)),
   axis.title.y = element_text(margin = margin(0, 10, 0, 0)),
-  plot.title = element_text(hjust = 0),
+  plot.title = element_text(hjust = 1),
   plot.title.position = "plot",
+  plot.subtitle = element_text(hjust = 1),
   plot.background = element_rect(fill = fill_color, color = NA),
   plot.margin = margin(rep(10, 4)),
   panel.background = element_rect(fill = fill_color, color = NA),
   legend.background = element_rect(fill = fill_color, color = NA),
   legend.key = element_rect(fill = fill_color, color = NA),
-  strip.background = element_rect(fill = fill_color, color = NA)
+  strip.background = element_rect(fill = fill_color, color = NA),
+  axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
+  legend.text = element_blank(),
+  legend.ticks = element_blank(),
+  legend.location = "plot",
+  legend.position = "top",
+  legend.direction = "horizontal",
+  legend.justification = "right",
+  legend.margin = margin(0, 0, 0, 0)
   )
 
 # EDA ----
@@ -190,10 +200,12 @@ cheese_aroma_sum <- cheese_aroma %>%
   summarize(count = sum(count), .groups = 'drop')
 
 # Plots ----
+set.seed(35)
+
 ## Flavor Plots ----
 flavor_plot <- cheese_flavor_sum %>% 
   left_join(flavor_scale, by = "flavor") %>% 
-  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(100, 0)))
+  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))
 
 ### Flavor Column ----
 ggplot(flavor_plot, aes(
@@ -202,16 +214,14 @@ ggplot(flavor_plot, aes(
     fill = rank)) +
   geom_col() +
   scale_fill_gradientn(colors = palette_flavor) +
+  scale_y_continuous(limits = c(0, 300)) +
   labs(
-    x = "Flavor", 
-    y = "Count", 
-    fill = "Pungency") +
-  theme(
-    axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
-    legend.text = element_blank(),
-    legend.ticks = element_blank(),
-    legend.title = element_text(angle = 90)
-    )
+    x = "Described Flavor", 
+    y = "Number of Varieties", 
+    fill = "Sharpness",
+    title = "Cheese Flavor Frequency",
+    subtitle = "Across 1000+ Varieties"
+  )
 
 ## Flavor Cloud ----
 ggplot(flavor_plot, 
@@ -223,6 +233,10 @@ ggplot(flavor_plot,
     ) +
   ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +
   scale_size_area(max_size = 60) +
+  labs(
+    title = "Cheese Flavor Frequency",
+    subtitle = "Across 1000+ Varieties"
+  ) +
   scale_color_gradientn(colors = palette_flavor)
 
 ## Aroma Plots ----
@@ -237,18 +251,15 @@ ggplot(aroma_plot, aes(
     fill = rank)
     ) +
   geom_col() +
+  scale_y_continuous(limits = c(0, 200)) +
   scale_fill_gradientn(colors = palette_aroma) +
   labs(
-    x = "Aroma", 
-    y = "Count", 
-    fill = "Pungency"
-    ) +
-  theme(
-    axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
-    legend.text = element_blank(),
-    legend.ticks = element_blank(),
-    legend.title = element_text(angle = 90)
-  )
+    x = "Described Aroma", 
+    y = "Number of Varieties", 
+    fill = "Pungency",
+    title = "Cheese Aroma Frequency",
+    subtitle = "Across 1000+ Varieties"
+    )
 
 ### Aroma Cloud ----
 ggplot(aroma_plot, 
@@ -260,4 +271,8 @@ ggplot(aroma_plot,
     ) +
   ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +
   scale_size_area(max_size = 60) +
+  labs(
+    title = "Cheese Aroma Frequency",
+    subtitle = "Across 1000+ Varieties"
+    ) +
   scale_color_gradientn(colors = palette_aroma)
