@@ -7,11 +7,9 @@ library(stringr)
 
 # Import ----
 # tuesdata <- tidytuesdayR::tt_load(2024, week = 23)
-
-saveRDS(tuesdata, here("tidytuesday2024", "tidy23", "tuesdata23.rds"))
+# saveRDS(tuesdata, here("tidytuesday2024", "tidy23", "tuesdata23.rds"))
 
 tuesdata <- readRDS(here::here("tidytuesday2024", "tidy23", "tuesdata23.rds"))
-
 cheeses <- tuesdata$cheeses
 
 # Theme ----
@@ -191,12 +189,31 @@ cheese_aroma_sum <- cheese_aroma %>%
   group_by(aroma) %>%
   summarize(count = sum(count), .groups = 'drop')
 
-# Word Cloud ----
-## Flavor Cloud ----
+# Plots ----
+## Flavor Plots ----
 flavor_plot <- cheese_flavor_sum %>% 
   left_join(flavor_scale, by = "flavor") %>% 
-  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(80, 20)))
+  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(100, 0)))
 
+### Flavor Column ----
+ggplot(flavor_plot, aes(
+    x = reorder(flavor, rank), 
+    y = count, 
+    fill = rank)) +
+  geom_col() +
+  scale_fill_gradientn(colors = palette_flavor) +
+  labs(
+    x = "Flavor", 
+    y = "Count", 
+    fill = "Pungency") +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
+    legend.text = element_blank(),
+    legend.ticks = element_blank(),
+    legend.title = element_text(angle = 90)
+    )
+
+## Flavor Cloud ----
 ggplot(flavor_plot, 
   aes(
     label = flavor,
@@ -204,22 +221,43 @@ ggplot(flavor_plot,
     color = rank,
     angle =angle)
     ) +
-  ggwordcloud::geom_text_wordcloud_area() +
+  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +
   scale_size_area(max_size = 60) +
   scale_color_gradientn(colors = palette_flavor)
 
-## Aroma Cloud ----
+## Aroma Plots ----
 aroma_plot <- cheese_aroma_sum %>% 
   left_join(aroma_scale, by = "aroma") %>% 
   mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))
 
+### Aroma Column ----
+ggplot(aroma_plot, aes(
+    x = reorder(aroma, rank),
+    y = count,
+    fill = rank)
+    ) +
+  geom_col() +
+  scale_fill_gradientn(colors = palette_aroma) +
+  labs(
+    x = "Aroma", 
+    y = "Count", 
+    fill = "Pungency"
+    ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
+    legend.text = element_blank(),
+    legend.ticks = element_blank(),
+    legend.title = element_text(angle = 90)
+  )
+
+### Aroma Cloud ----
 ggplot(aroma_plot, 
-       aes(
-         label = aroma,
-         size = count,
-         color = rank,
-         angle =angle)
-) +
-  ggwordcloud::geom_text_wordcloud_area() +
+  aes(
+    label = aroma,
+    size = count,
+    color = rank,
+    angle =angle)
+    ) +
+  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +
   scale_size_area(max_size = 60) +
   scale_color_gradientn(colors = palette_aroma)
