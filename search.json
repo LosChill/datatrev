@@ -73,63 +73,99 @@
     "href": "tidytuesday2024/tidy23.html#overview",
     "title": "22",
     "section": "Overview",
-    "text": "Overview"
+    "text": "Overview",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#set-up",
     "href": "tidytuesday2024/tidy23.html#set-up",
     "title": "22",
     "section": "Set Up",
-    "text": "Set Up\n\nLibraries\n\nlibrary(tidytuesdayR)\nlibrary(tidyverse)\nlibrary(here)\nlibrary(paletteer)\nlibrary(ggwordcloud)\nlibrary(ggpmisc)\nlibrary(stringr)"
+    "text": "Set Up\n\nLibraries\n\nlibrary(tidytuesdayR)\nlibrary(tidyverse)\nlibrary(here)\nlibrary(paletteer)\nlibrary(ggwordcloud)\nlibrary(ggpmisc)\nlibrary(stringr)",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#import-data",
     "href": "tidytuesday2024/tidy23.html#import-data",
     "title": "22",
     "section": "Import Data",
-    "text": "Import Data\n\ntuesdata &lt;- tidytuesdayR::tt_load(2024, week = 23)\nsaveRDS(tuesdata, here(\"tidytuesday2024\", \"tidy23\", \"tuesdata23.rds\"))"
+    "text": "Import Data\n\ntuesdata &lt;- tidytuesdayR::tt_load(2024, week = 23)\nsaveRDS(tuesdata, here(\"tidytuesday2024\", \"tidy23\", \"tuesdata23.rds\"))",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#theme",
     "href": "tidytuesday2024/tidy23.html#theme",
     "title": "22",
     "section": "Theme",
-    "text": "Theme\n\nColors\n\ntext_color &lt;- \"beige\"\nfill_color &lt;- \"#1f2d36\"\n\npalette_aroma &lt;- paletteer::paletteer_c(\"ggthemes::Classic Area-Brown\", n = 39)\npalette_flavor &lt;- paletteer::paletteer_c(\"ggthemes::Classic Area-Brown\", n = 45)\n\n\n\nScript Theme\n\ntheme_set(theme_minimal(\n  base_family = \"Liberation Mono\", \n  base_size = 12))\n\ntheme_update(\n  panel.grid.major = element_blank(), \n  panel.grid.minor = element_blank(),\n  text = element_text(color = text_color),\n  axis.text = element_text(color = text_color),\n  strip.text = element_text(color = text_color),\n  axis.title.x = element_text(margin = margin(10, 0, 0, 0)),\n  axis.title.y = element_text(margin = margin(0, 10, 0, 0)),\n  plot.title = element_text(hjust = 1),\n  plot.title.position = \"plot\",\n  plot.subtitle = element_text(hjust = 1),\n  plot.background = element_rect(fill = fill_color, color = NA),\n  plot.margin = margin(rep(10, 4)),\n  panel.background = element_rect(fill = fill_color, color = NA),\n  legend.background = element_rect(fill = fill_color, color = NA),\n  legend.key = element_rect(fill = fill_color, color = NA),\n  strip.background = element_rect(fill = fill_color, color = NA),\n  axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),\n  legend.text = element_blank(),\n  legend.ticks = element_blank(),\n  legend.location = \"plot\",\n  legend.position = \"top\",\n  legend.direction = \"horizontal\",\n  legend.justification = \"right\",\n  legend.margin = margin(0, 0, 0, 0)\n  )"
+    "text": "Theme\n\nColors\n\ntext_color &lt;- \"beige\"\nfill_color &lt;- \"#1f2d36\"\n\npalette_aroma &lt;- paletteer::paletteer_c(\"ggthemes::Classic Area-Brown\", n = 39)\npalette_flavor &lt;- paletteer::paletteer_c(\"ggthemes::Classic Area-Brown\", n = 45)\n\n\n\nScript Theme\n\ntheme_set(theme_minimal(\n  base_family = \"Liberation Mono\", \n  base_size = 12))\n\ntheme_update(\n  panel.grid.major = element_blank(), \n  panel.grid.minor = element_blank(),\n  text = element_text(color = text_color),\n  axis.text = element_text(color = text_color),\n  strip.text = element_text(color = text_color),\n  axis.title.x = element_text(margin = margin(10, 0, 0, 0)),\n  axis.title.y = element_text(margin = margin(0, 10, 0, 0)),\n  plot.title = element_text(hjust = 1),\n  plot.title.position = \"plot\",\n  plot.subtitle = element_text(hjust = 1),\n  plot.background = element_rect(fill = fill_color, color = NA),\n  plot.margin = margin(rep(10, 4)),\n  panel.background = element_rect(fill = fill_color, color = NA),\n  legend.background = element_rect(fill = fill_color, color = NA),\n  legend.key = element_rect(fill = fill_color, color = NA),\n  strip.background = element_rect(fill = fill_color, color = NA),\n  axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),\n  legend.text = element_blank(),\n  legend.ticks = element_blank(),\n  legend.location = \"plot\",\n  legend.position = \"top\",\n  legend.direction = \"horizontal\",\n  legend.justification = \"right\",\n  legend.margin = margin(0, 0, 0, 0)\n  )",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#eda",
     "href": "tidytuesday2024/tidy23.html#eda",
     "title": "22",
     "section": "EDA",
-    "text": "EDA\n\nDistinct flavors and aromas\n\nunique_flavors &lt;- cheeses %&gt;% \n  distinct(flavor) %&gt;% \n  separate_rows(flavor, sep = \", \") %&gt;% \n  distinct(flavor)\n\nunique_aromas &lt;- cheeses %&gt;% \n  distinct(aroma) %&gt;% \n  separate_rows(aroma, sep = \", \") %&gt;% \n  distinct(aroma)"
+    "text": "EDA\n\nDistinct flavors and aromas\n\nunique_flavors &lt;- cheeses %&gt;% \n  distinct(flavor) %&gt;% \n  separate_rows(flavor, sep = \", \") %&gt;% \n  distinct(flavor)\n\nunique_aromas &lt;- cheeses %&gt;% \n  distinct(aroma) %&gt;% \n  separate_rows(aroma, sep = \", \") %&gt;% \n  distinct(aroma)",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#libraries-for-flavor-and-aroma",
     "href": "tidytuesday2024/tidy23.html#libraries-for-flavor-and-aroma",
     "title": "22",
     "section": "Libraries For Flavor and Aroma",
-    "text": "Libraries For Flavor and Aroma\n\nFlavor Scale\n\nflavor_scale &lt;- tibble(\n  rank = 1:45,\n  flavor = c(\n    \"mild\",\n    \"smooth\",\n    \"subtle\",\n    \"milky\",\n    \"creamy\",\n    \"buttery\",\n    \"sweet\",\n    \"fruity\",\n    \"nutty\",\n    \"herbaceous\",\n    \"grassy\",\n    \"floral\",\n    \"vegetal\",\n    \"savory\",\n    \"mellow\",\n    \"rustic\",\n    \"caramel\",\n    \"butterscotch\",\n    \"full-flavored\",\n    \"pronounced\",\n    \"earthy\",\n    \"woody\",\n    \"mushroomy\",\n    \"salty\",\n    \"burnt caramel\",\n    \"licorice\",\n    \"smokey\",\n    \"meaty\",\n    \"umami\",\n    \"oceanic\",\n    \"crunchy\",\n    \"tangy\",\n    \"citrusy\",\n    \"lemony\",\n    \"tart\",\n    \"sour\",\n    \"acidic\",\n    \"bitter\",\n    \"sharp\",\n    \"spicy\",\n    \"piquant\",\n    \"garlicky\",\n    \"strong\",\n    \"yeasty\",\n    \"pungent\"\n  )\n)\n\n\n\nAroma Scale\n\naroma_scale &lt;- tibble(\n  rank = 1:39,\n  aroma = c(\n    \"mild\", \n    \"fresh\", \n    \"subtle\", \n    \"pleasant\", \n    \"clean\", \n    \"buttery\", \n    \"milky\", \n    \"lactic\", \n    \"nutty\", \n    \"raw nut\", \n    \"pecan\", \n    \"rich\", \n    \"toasty\", \n    \"sweet\", \n    \"caramel\", \n    \"floral\", \n    \"fruity\", \n    \"perfumed\", \n    \"herbal\", \n    \"grassy\", \n    \"earthy\", \n    \"woody\", \n    \"mushroom\", \n    \"spicy\", \n    \"smokey\", \n    \"yeasty\", \n    \"aromatic\", \n    \"lanoline\", \n    \"whiskey\", \n    \"pronounced\", \n    \"strong\", \n    \"fermented\", \n    \"ripe\", \n    \"musty\", \n    \"garlicky\", \n    \"goaty\", \n    \"barnyardy\", \n    \"stinky\", \n    \"pungent\"\n  )\n)"
+    "text": "Libraries For Flavor and Aroma\n\nFlavor Scale\n\nflavor_scale &lt;- tibble(\n  rank = 1:45,\n  flavor = c(\n    \"mild\",\n    \"smooth\",\n    \"subtle\",\n    \"milky\",\n    \"creamy\",\n    \"buttery\",\n    \"sweet\",\n    \"fruity\",\n    \"nutty\",\n    \"herbaceous\",\n    \"grassy\",\n    \"floral\",\n    \"vegetal\",\n    \"savory\",\n    \"mellow\",\n    \"rustic\",\n    \"caramel\",\n    \"butterscotch\",\n    \"full-flavored\",\n    \"pronounced\",\n    \"earthy\",\n    \"woody\",\n    \"mushroomy\",\n    \"salty\",\n    \"burnt caramel\",\n    \"licorice\",\n    \"smokey\",\n    \"meaty\",\n    \"umami\",\n    \"oceanic\",\n    \"crunchy\",\n    \"tangy\",\n    \"citrusy\",\n    \"lemony\",\n    \"tart\",\n    \"sour\",\n    \"acidic\",\n    \"bitter\",\n    \"sharp\",\n    \"spicy\",\n    \"piquant\",\n    \"garlicky\",\n    \"strong\",\n    \"yeasty\",\n    \"pungent\"\n  )\n)\n\n\n\nAroma Scale\n\naroma_scale &lt;- tibble(\n  rank = 1:39,\n  aroma = c(\n    \"mild\", \n    \"fresh\", \n    \"subtle\", \n    \"pleasant\", \n    \"clean\", \n    \"buttery\", \n    \"milky\", \n    \"lactic\", \n    \"nutty\", \n    \"raw nut\", \n    \"pecan\", \n    \"rich\", \n    \"toasty\", \n    \"sweet\", \n    \"caramel\", \n    \"floral\", \n    \"fruity\", \n    \"perfumed\", \n    \"herbal\", \n    \"grassy\", \n    \"earthy\", \n    \"woody\", \n    \"mushroom\", \n    \"spicy\", \n    \"smokey\", \n    \"yeasty\", \n    \"aromatic\", \n    \"lanoline\", \n    \"whiskey\", \n    \"pronounced\", \n    \"strong\", \n    \"fermented\", \n    \"ripe\", \n    \"musty\", \n    \"garlicky\", \n    \"goaty\", \n    \"barnyardy\", \n    \"stinky\", \n    \"pungent\"\n  )\n)",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#one-hot",
     "href": "tidytuesday2024/tidy23.html#one-hot",
     "title": "22",
     "section": "One-Hot",
-    "text": "One-Hot\n\ncheese_flavor &lt;- cheeses %&gt;%\n  select(cheese, flavor) %&gt;% \n  separate_rows(flavor, sep = \", \") %&gt;% \n  mutate(value = 1) %&gt;% \n  pivot_wider(names_from = flavor, values_from = value, values_fill = list(value = 0))\n\ncheese_aroma &lt;- cheeses %&gt;% \n  select(cheese, aroma) %&gt;% \n  separate_rows(aroma, sep = \", \") %&gt;% \n  mutate(value = 1) %&gt;% \n  pivot_wider(names_from = aroma, values_from = value, values_fill = list(value = 0))"
+    "text": "One-Hot\n\ncheese_flavor &lt;- cheeses %&gt;%\n  select(cheese, flavor) %&gt;% \n  separate_rows(flavor, sep = \", \") %&gt;% \n  mutate(value = 1) %&gt;% \n  pivot_wider(names_from = flavor, values_from = value, values_fill = list(value = 0))\n\ncheese_aroma &lt;- cheeses %&gt;% \n  select(cheese, aroma) %&gt;% \n  separate_rows(aroma, sep = \", \") %&gt;% \n  mutate(value = 1) %&gt;% \n  pivot_wider(names_from = aroma, values_from = value, values_fill = list(value = 0))",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#summary",
     "href": "tidytuesday2024/tidy23.html#summary",
     "title": "22",
     "section": "Summary",
-    "text": "Summary\n\ncheese_flavor_sum &lt;- cheese_flavor %&gt;% \n  select_if(is.numeric) %&gt;% \n  summarise_all(sum) %&gt;% \n  pivot_longer(cols = everything(), names_to = \"flavor\", values_to = \"count\") %&gt;% \n  filter(flavor != \"NA\") %&gt;% \n  mutate(flavor = str_trim(flavor)) %&gt;%\n  group_by(flavor) %&gt;%\n  summarize(count = sum(count), .groups = 'drop')\n\ncheese_aroma_sum &lt;- cheese_aroma %&gt;% \n  select_if(is.numeric) %&gt;% \n  summarise_all(sum) %&gt;% \n  pivot_longer(cols = everything(), names_to = \"aroma\", values_to = \"count\") %&gt;% \n  filter(aroma != \"NA\") %&gt;% \n  mutate(aroma = str_trim(aroma)) %&gt;%\n  group_by(aroma) %&gt;%\n  summarize(count = sum(count), .groups = 'drop')"
+    "text": "Summary\n\ncheese_flavor_sum &lt;- cheese_flavor %&gt;% \n  select_if(is.numeric) %&gt;% \n  summarise_all(sum) %&gt;% \n  pivot_longer(cols = everything(), names_to = \"flavor\", values_to = \"count\") %&gt;% \n  filter(flavor != \"NA\") %&gt;% \n  mutate(flavor = str_trim(flavor)) %&gt;%\n  group_by(flavor) %&gt;%\n  summarize(count = sum(count), .groups = 'drop')\n\ncheese_aroma_sum &lt;- cheese_aroma %&gt;% \n  select_if(is.numeric) %&gt;% \n  summarise_all(sum) %&gt;% \n  pivot_longer(cols = everything(), names_to = \"aroma\", values_to = \"count\") %&gt;% \n  filter(aroma != \"NA\") %&gt;% \n  mutate(aroma = str_trim(aroma)) %&gt;%\n  group_by(aroma) %&gt;%\n  summarize(count = sum(count), .groups = 'drop')",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "tidytuesday2024/tidy23.html#plots",
     "href": "tidytuesday2024/tidy23.html#plots",
     "title": "22",
     "section": "Plots",
-    "text": "Plots\n\nset.seed(35)\n\nflavor_plot &lt;- cheese_flavor_sum %&gt;% \n  left_join(flavor_scale, by = \"flavor\") %&gt;% \n  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))\n\naroma_plot &lt;- cheese_aroma_sum %&gt;% \n  left_join(aroma_scale, by = \"aroma\") %&gt;% \n  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))\n\n\nColumn Plots\n\nFlavor Column\n\nggplot(flavor_plot, aes(\n    x = reorder(flavor, rank), \n    y = count, \n    fill = rank)) +\n  geom_col() +\n  scale_fill_gradientn(colors = palette_flavor) +\n  scale_y_continuous(limits = c(0, 300)) +\n  labs(\n    x = \"Described Flavor\", \n    y = \"Number of Varieties\", \n    fill = \"Sharpness\",\n    title = \"Cheese Flavor Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n  )\n\n\n\n\n\n\n\n\n\n\nAroma Column\n\nggplot(aroma_plot, aes(\n    x = reorder(aroma, rank),\n    y = count,\n    fill = rank)\n    ) +\n  geom_col() +\n  scale_y_continuous(limits = c(0, 200)) +\n  scale_fill_gradientn(colors = palette_aroma) +\n  labs(\n    x = \"Described Aroma\", \n    y = \"Number of Varieties\", \n    fill = \"Pungency\",\n    title = \"Cheese Aroma Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n    )\n\n\n\n\n\n\n\n\n\n\n\nCloud Plots\n\nFlavor Cloud\n\nggplot(flavor_plot, \n  aes(\n    label = flavor,\n    size = count,\n    color = rank,\n    angle =angle)\n    ) +\n  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +\n  scale_size_area(max_size = 40) +\n  labs(\n    title = \"Cheese Flavor Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n  ) +\n  scale_color_gradientn(colors = palette_flavor) +\n  theme(\n    plot.title = element_text(hjust = 0),\n    plot.subtitle = element_text(hjust = 0)\n    )\n\n\n\n\n\n\n\n\n\n\nAroma Cloud\n\nggplot(aroma_plot, \n  aes(\n    label = aroma,\n    size = count,\n    color = rank,\n    angle =angle)\n    ) +\n  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +\n  scale_size_area(max_size = 40) +\n  labs(\n    title = \"Cheese Aroma Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n    ) +\n  scale_color_gradientn(colors = palette_aroma) +\n  theme(\n    plot.title = element_text(hjust = 0),\n    plot.subtitle = element_text(hjust = 0)\n    )"
+    "text": "Plots\n\nset.seed(35)\n\nflavor_plot &lt;- cheese_flavor_sum %&gt;% \n  left_join(flavor_scale, by = \"flavor\") %&gt;% \n  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))\n\naroma_plot &lt;- cheese_aroma_sum %&gt;% \n  left_join(aroma_scale, by = \"aroma\") %&gt;% \n  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))\n\n\nColumn Plots\n\nFlavor Column\n\nggplot(flavor_plot, aes(\n    x = reorder(flavor, rank), \n    y = count, \n    fill = rank)) +\n  geom_col() +\n  scale_fill_gradientn(colors = palette_flavor) +\n  scale_y_continuous(limits = c(0, 300)) +\n  labs(\n    x = \"Described Flavor\", \n    y = \"Number of Varieties\", \n    fill = \"Sharpness\",\n    title = \"Cheese Flavor Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n  )\n\n\n\n\n\n\n\n\n\n\nAroma Column\n\nggplot(aroma_plot, aes(\n    x = reorder(aroma, rank),\n    y = count,\n    fill = rank)\n    ) +\n  geom_col() +\n  scale_y_continuous(limits = c(0, 200)) +\n  scale_fill_gradientn(colors = palette_aroma) +\n  labs(\n    x = \"Described Aroma\", \n    y = \"Number of Varieties\", \n    fill = \"Pungency\",\n    title = \"Cheese Aroma Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n    )\n\n\n\n\n\n\n\n\n\n\n\nCloud Plots\n\nFlavor Cloud\n\nggplot(flavor_plot, \n  aes(\n    label = flavor,\n    size = count,\n    color = rank,\n    angle =angle)\n    ) +\n  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +\n  scale_size_area(max_size = 40) +\n  labs(\n    title = \"Cheese Flavor Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n  ) +\n  scale_color_gradientn(colors = palette_flavor) +\n  theme(\n    plot.title = element_text(hjust = 0),\n    plot.subtitle = element_text(hjust = 0)\n    )\n\n\n\n\n\n\n\n\n\n\nAroma Cloud\n\nggplot(aroma_plot, \n  aes(\n    label = aroma,\n    size = count,\n    color = rank,\n    angle =angle)\n    ) +\n  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +\n  scale_size_area(max_size = 40) +\n  labs(\n    title = \"Cheese Aroma Frequency\",\n    subtitle = \"Across 1000+ Varieties\"\n    ) +\n  scale_color_gradientn(colors = palette_aroma) +\n  theme(\n    plot.title = element_text(hjust = 0),\n    plot.subtitle = element_text(hjust = 0)\n    )",
+    "crumbs": [
+      "Tidy Tuesday 2024",
+      "22"
+    ]
   },
   {
     "objectID": "datatrev.html",
