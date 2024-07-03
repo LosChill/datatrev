@@ -1,27 +1,72 @@
+---
+title: "22"
+format:
+  html:
+    toc: true
+    toc-location: right
+editor: visual
+---
+
+## Cheese
+
+## Overview
+
+## Set Up
+
+### Libraries
+```{r}
+#| label: load_packages
+#| include: true
+#| message: false
+
 library(tidytuesdayR)
 library(tidyverse)
 library(here)
 library(paletteer)
 library(ggwordcloud)
+library(ggpmisc)
 library(stringr)
+```
 
-# Import ----
-# tuesdata <- tidytuesdayR::tt_load(2024, week = 23)
-# saveRDS(tuesdata, here("tidytuesday2024", "tidy23", "tuesdata23.rds"))
+## Import Data
+```{r}
+#| label: download_data
+#| include: true
+#| eval: false
+
+tuesdata <- tidytuesdayR::tt_load(2024, week = 23)
+saveRDS(tuesdata, here("tidytuesday2024", "tidy23", "tuesdata23.rds"))
+```
+
+```{r}
+#| label: import_data
+#| include: false
+#| message: false
 
 tuesdata <- readRDS(here::here("tidytuesday2024", "tidy23", "tuesdata23.rds"))
 cheeses <- tuesdata$cheeses
+```
 
-# Theme ----
-## Colors ----
+## Theme
+
+### Colors
+```{r}
+#| label: colors
+#| include: true
+
 text_color <- "beige"
 fill_color <- "#1f2d36"
 
 palette_aroma <- paletteer::paletteer_c("ggthemes::Classic Area-Brown", n = 39)
 palette_flavor <- paletteer::paletteer_c("ggthemes::Classic Area-Brown", n = 45)
+```
 
 
-## Script theme ----
+### Script Theme
+```{r}
+#| label: theme
+#| include: true
+
 theme_set(theme_minimal(
   base_family = "Liberation Mono", 
   base_size = 12))
@@ -52,10 +97,15 @@ theme_update(
   legend.justification = "right",
   legend.margin = margin(0, 0, 0, 0)
   )
+```
 
-# EDA ----
+## EDA
 
-## Distinct flavors and aromas ----
+### Distinct flavors and aromas
+```{r}
+#| label: distinct
+#| include: true
+
 unique_flavors <- cheeses %>% 
   distinct(flavor) %>% 
   separate_rows(flavor, sep = ", ") %>% 
@@ -65,10 +115,15 @@ unique_aromas <- cheeses %>%
   distinct(aroma) %>% 
   separate_rows(aroma, sep = ", ") %>% 
   distinct(aroma)
+```
 
-## Libraries for flavor and aroma scales ----
+## Libraries For Flavor and Aroma
 
-### Flavor scale ----
+### Flavor Scale
+```{r}
+#| label: flavor_scale
+#| include: true
+
 flavor_scale <- tibble(
   rank = 1:45,
   flavor = c(
@@ -119,8 +174,13 @@ flavor_scale <- tibble(
     "pungent"
   )
 )
+```
 
-### Aroma scale ----
+### Aroma Scale
+```{r}
+#| label: aroma_scale
+#| include: true
+
 aroma_scale <- tibble(
   rank = 1:39,
   aroma = c(
@@ -165,16 +225,13 @@ aroma_scale <- tibble(
     "pungent"
   )
 )
+```
 
-### Export ----
-sharp_library <- list(
-  flavor_scale = flavor_scale,
-  aroma_scale = aroma_scale
-  )
+## One-Hot
+```{r}
+#| label: one_hot
+#| include: true
 
-saveRDS(sharp_library, file = here("tidytuesday2024", "tidy23", "sharp_library.rds"))
-
-# One-hot ----
 cheese_flavor <- cheeses %>%
   select(cheese, flavor) %>% 
   separate_rows(flavor, sep = ", ") %>% 
@@ -186,16 +243,13 @@ cheese_aroma <- cheeses %>%
   separate_rows(aroma, sep = ", ") %>% 
   mutate(value = 1) %>% 
   pivot_wider(names_from = aroma, values_from = value, values_fill = list(value = 0))
+```
 
-## Export
-one_hot <- list(
-  cheese_flavor = cheese_flavor,
-  cheese_aroma = cheese_aroma
-  )
+## Summary
+```{r}
+#| label: summary
+#| include: true
 
-saveRDS(one_hot, file = here::here("tidytuesday2024", "tidy23", "one_hot.rds"))
-
-# Summary ----
 cheese_flavor_sum <- cheese_flavor %>% 
   select_if(is.numeric) %>% 
   summarise_all(sum) %>% 
@@ -213,16 +267,31 @@ cheese_aroma_sum <- cheese_aroma %>%
   mutate(aroma = str_trim(aroma)) %>%
   group_by(aroma) %>%
   summarize(count = sum(count), .groups = 'drop')
+```
 
-# Plots ----
+## Plots
+```{r}
+#| label: plots
+#| include: true
+
 set.seed(35)
 
-## Flavor Plots ----
 flavor_plot <- cheese_flavor_sum %>% 
   left_join(flavor_scale, by = "flavor") %>% 
   mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))
 
-### Flavor Column ----
+aroma_plot <- cheese_aroma_sum %>% 
+  left_join(aroma_scale, by = "aroma") %>% 
+  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))
+```
+
+### Column Plots
+
+#### Flavor Column
+```{r, fig.align='center', out.width='100%'}
+#| label: flavor_column
+#| include: true
+
 ggplot(flavor_plot, aes(
     x = reorder(flavor, rank), 
     y = count, 
@@ -237,33 +306,13 @@ ggplot(flavor_plot, aes(
     title = "Cheese Flavor Frequency",
     subtitle = "Across 1000+ Varieties"
   )
+```
 
-## Flavor Cloud ----
-ggplot(flavor_plot, 
-  aes(
-    label = flavor,
-    size = count,
-    color = rank,
-    angle =angle)
-    ) +
-  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +
-  scale_size_area(max_size = 60) +
-  labs(
-    title = "Cheese Flavor Frequency",
-    subtitle = "Across 1000+ Varieties"
-  ) +
-  scale_color_gradientn(colors = palette_flavor) +
-  theme(
-    plot.title = element_text(hjust = 0),
-    plot.subtitle = element_text(hjust = 0)
-    )
+#### Aroma Column
+```{r, fig.align='center', out.width='100%'}
+#| label: aroma_column
+#| include: true
 
-## Aroma Plots ----
-aroma_plot <- cheese_aroma_sum %>% 
-  left_join(aroma_scale, by = "aroma") %>% 
-  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))
-
-### Aroma Column ----
 ggplot(aroma_plot, aes(
     x = reorder(aroma, rank),
     y = count,
@@ -279,8 +328,40 @@ ggplot(aroma_plot, aes(
     title = "Cheese Aroma Frequency",
     subtitle = "Across 1000+ Varieties"
     )
+```
 
-### Aroma Cloud ----
+### Cloud Plots
+
+#### Flavor Cloud
+```{r, fig.align='center', out.width='100%'}
+#| label: flavor_cloud
+#| include: true
+
+ggplot(flavor_plot, 
+  aes(
+    label = flavor,
+    size = count,
+    color = rank,
+    angle =angle)
+    ) +
+  ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +
+  scale_size_area(max_size = 40) +
+  labs(
+    title = "Cheese Flavor Frequency",
+    subtitle = "Across 1000+ Varieties"
+  ) +
+  scale_color_gradientn(colors = palette_flavor) +
+  theme(
+    plot.title = element_text(hjust = 0),
+    plot.subtitle = element_text(hjust = 0)
+    )
+```
+
+#### Aroma Cloud
+```{r, fig.align='center', out.width='100%'}
+#| label: aroma_cloud
+#| include: true
+
 ggplot(aroma_plot, 
   aes(
     label = aroma,
@@ -289,7 +370,7 @@ ggplot(aroma_plot,
     angle =angle)
     ) +
   ggwordcloud::geom_text_wordcloud_area(eccentricity = 1) +
-  scale_size_area(max_size = 60) +
+  scale_size_area(max_size = 40) +
   labs(
     title = "Cheese Aroma Frequency",
     subtitle = "Across 1000+ Varieties"
@@ -299,3 +380,4 @@ ggplot(aroma_plot,
     plot.title = element_text(hjust = 0),
     plot.subtitle = element_text(hjust = 0)
     )
+```
