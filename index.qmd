@@ -11,4 +11,6 @@ A creative data studio.
 
 Data Visualizations, Explorations, Reporting, Dashboards, Scripts, you name it we do it!
 
-No questions asked, no judgement passed. No job too small! Se habla español.
+No questions asked, no judgement passed. No job too small!
+
+Specializing in R, RStudio, Quarto, Tableau, DuckDB, MariaDB

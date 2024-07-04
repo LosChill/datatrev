@@ -1,5 +1,5 @@
 ---
-title: "22"
+title: "23"
 format:
   html:
     toc: true
@@ -14,6 +14,7 @@ editor: visual
 ## Set Up
 
 ### Libraries
+
 ```{r}
 #| label: load_packages
 #| include: true
@@ -29,6 +30,7 @@ library(stringr)
 ```
 
 ## Import Data
+
 ```{r}
 #| label: download_data
 #| include: true
@@ -50,6 +52,7 @@ cheeses <- tuesdata$cheeses
 ## Theme
 
 ### Colors
+
 ```{r}
 #| label: colors
 #| include: true
@@ -59,10 +62,12 @@ fill_color <- "#1f2d36"
 
 palette_aroma <- paletteer::paletteer_c("ggthemes::Classic Area-Brown", n = 39)
 palette_flavor <- paletteer::paletteer_c("ggthemes::Classic Area-Brown", n = 45)
+
+caption_str <- "@datatrev // Trevor Pendras // www.pendras.com"
 ```
 
-
 ### Script Theme
+
 ```{r}
 #| label: theme
 #| include: true
@@ -81,7 +86,9 @@ theme_update(
   axis.title.y = element_text(margin = margin(0, 10, 0, 0)),
   plot.title = element_text(hjust = 1),
   plot.title.position = "plot",
+  plot.caption.position = "plot",
   plot.subtitle = element_text(hjust = 1),
+  plot.caption = element_text(size = 6, color = text_color, hjust = 1),
   plot.background = element_rect(fill = fill_color, color = NA),
   plot.margin = margin(rep(10, 4)),
   panel.background = element_rect(fill = fill_color, color = NA),
@@ -102,6 +109,7 @@ theme_update(
 ## EDA
 
 ### Distinct flavors and aromas
+
 ```{r}
 #| label: distinct
 #| include: true
@@ -120,6 +128,7 @@ unique_aromas <- cheeses %>%
 ## Libraries For Flavor and Aroma
 
 ### Flavor Scale
+
 ```{r}
 #| label: flavor_scale
 #| include: true
@@ -177,6 +186,7 @@ flavor_scale <- tibble(
 ```
 
 ### Aroma Scale
+
 ```{r}
 #| label: aroma_scale
 #| include: true
@@ -228,6 +238,7 @@ aroma_scale <- tibble(
 ```
 
 ## One-Hot
+
 ```{r}
 #| label: one_hot
 #| include: true
@@ -246,6 +257,7 @@ cheese_aroma <- cheeses %>%
 ```
 
 ## Summary
+
 ```{r}
 #| label: summary
 #| include: true
@@ -270,6 +282,7 @@ cheese_aroma_sum <- cheese_aroma %>%
 ```
 
 ## Plots
+
 ```{r}
 #| label: plots
 #| include: true
@@ -288,6 +301,7 @@ aroma_plot <- cheese_aroma_sum %>%
 ### Column Plots
 
 #### Flavor Column
+
 ```{r, fig.align='center', out.width='100%'}
 #| label: flavor_column
 #| include: true
@@ -304,11 +318,13 @@ ggplot(flavor_plot, aes(
     y = "Number of Varieties", 
     fill = "Sharpness",
     title = "Cheese Flavor Frequency",
-    subtitle = "Across 1000+ Varieties"
+    subtitle = "Across 1000+ Varieties",
+    caption = caption_str
   )
 ```
 
 #### Aroma Column
+
 ```{r, fig.align='center', out.width='100%'}
 #| label: aroma_column
 #| include: true
@@ -326,13 +342,15 @@ ggplot(aroma_plot, aes(
     y = "Number of Varieties", 
     fill = "Pungency",
     title = "Cheese Aroma Frequency",
-    subtitle = "Across 1000+ Varieties"
+    subtitle = "Across 1000+ Varieties",
+    caption = caption_str
     )
 ```
 
 ### Cloud Plots
 
 #### Flavor Cloud
+
 ```{r, fig.align='center', out.width='100%'}
 #| label: flavor_cloud
 #| include: true
@@ -348,7 +366,8 @@ ggplot(flavor_plot,
   scale_size_area(max_size = 40) +
   labs(
     title = "Cheese Flavor Frequency",
-    subtitle = "Across 1000+ Varieties"
+    subtitle = "Across 1000+ Varieties",
+    caption = caption_str
   ) +
   scale_color_gradientn(colors = palette_flavor) +
   theme(
@@ -358,6 +377,7 @@ ggplot(flavor_plot,
 ```
 
 #### Aroma Cloud
+
 ```{r, fig.align='center', out.width='100%'}
 #| label: aroma_cloud
 #| include: true
@@ -373,7 +393,8 @@ ggplot(aroma_plot,
   scale_size_area(max_size = 40) +
   labs(
     title = "Cheese Aroma Frequency",
-    subtitle = "Across 1000+ Varieties"
+    subtitle = "Across 1000+ Varieties",
+    caption = caption_str
     ) +
   scale_color_gradientn(colors = palette_aroma) +
   theme(

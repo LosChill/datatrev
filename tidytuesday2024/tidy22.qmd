@@ -32,6 +32,7 @@ library(paletteer)
 ### Import Data
 
 Here I am actually importing from a saved csv under the hood. Ran into query limits using the direct import from github every time while I was in testing. But I'm showing the original import script with eval:false for this record. I think I'll stick with this from now on.
+
 ```{r}
 #| label: download_data
 #| include: true
@@ -64,6 +65,7 @@ spending_2021 <- tuesdata$spending_2021
 ### Colors
 
 Trying to use earth-tones. I considered creating a table and manually assigning each produce a color that made sense. But I am planning to use labels anyway rather than relying on colors as a legend so I skipped the extra work.
+
 ```{r}
 #| label: colors
 #| include: true
@@ -108,7 +110,7 @@ theme_update(
 
 ## EDA
 
-I was initially curious about comparing plot performance. Planting data included which plot the seeds were planted in, but that data was absent from harvesting numbers. So that was out. I turned my attention to yields. We could compare the weight harvested of each plant from 2020 to 2021, but what we really want to know is the yield. For this I want to see the total weight grown from the number of seeds. 
+I was initially curious about comparing plot performance. Planting data included which plot the seeds were planted in, but that data was absent from harvesting numbers. So that was out. I turned my attention to yields. We could compare the weight harvested of each plant from 2020 to 2021, but what we really want to know is the yield. For this I want to see the total weight grown from the number of seeds.
 
 This got me thinking about biological efficiency and wondering what plants grow more mass with fewer seeds. I know creating seeds is a cost-benefit balance for the plant. Create many low-value resource-saving seeds, or fewer resource-intensive seeds that each have a higher chance of germination. But we don't have seed weight data so that will be for another day.
 

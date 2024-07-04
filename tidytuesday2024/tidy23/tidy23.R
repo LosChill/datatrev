@@ -36,7 +36,9 @@ theme_update(
   axis.title.y = element_text(margin = margin(0, 10, 0, 0)),
   plot.title = element_text(hjust = 1),
   plot.title.position = "plot",
+  plot.caption.position = "plot",
   plot.subtitle = element_text(hjust = 1),
+  plot.caption = element_text(size = 7.5, color = text_color, hjust = 1),
   plot.background = element_rect(fill = fill_color, color = NA),
   plot.margin = margin(rep(10, 4)),
   panel.background = element_rect(fill = fill_color, color = NA),
@@ -223,7 +225,7 @@ flavor_plot <- cheese_flavor_sum %>%
   mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))
 
 ### Flavor Column ----
-ggplot(flavor_plot, aes(
+flavor_column <- ggplot(flavor_plot, aes(
     x = reorder(flavor, rank), 
     y = count, 
     fill = rank)) +
@@ -235,11 +237,12 @@ ggplot(flavor_plot, aes(
     y = "Number of Varieties", 
     fill = "Sharpness",
     title = "Cheese Flavor Frequency",
-    subtitle = "Across 1000+ Varieties"
-  )
+    subtitle = "Across 1000+ Varieties",
+    caption = "@datatrev // Trevor Pendras // www.pendras.com"
+    )
 
 ## Flavor Cloud ----
-ggplot(flavor_plot, 
+flavor_cloud <- ggplot(flavor_plot, 
   aes(
     label = flavor,
     size = count,
@@ -250,7 +253,8 @@ ggplot(flavor_plot,
   scale_size_area(max_size = 60) +
   labs(
     title = "Cheese Flavor Frequency",
-    subtitle = "Across 1000+ Varieties"
+    subtitle = "Across 1000+ Varieties",
+    caption = "@datatrev // Trevor Pendras // www.pendras.com"
   ) +
   scale_color_gradientn(colors = palette_flavor) +
   theme(
@@ -264,7 +268,7 @@ aroma_plot <- cheese_aroma_sum %>%
   mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(60, 40)))
 
 ### Aroma Column ----
-ggplot(aroma_plot, aes(
+aroma_column <- ggplot(aroma_plot, aes(
     x = reorder(aroma, rank),
     y = count,
     fill = rank)
@@ -277,11 +281,12 @@ ggplot(aroma_plot, aes(
     y = "Number of Varieties", 
     fill = "Pungency",
     title = "Cheese Aroma Frequency",
-    subtitle = "Across 1000+ Varieties"
+    subtitle = "Across 1000+ Varieties",
+    caption = "@datatrev // Trevor Pendras // www.pendras.com"
     )
 
 ### Aroma Cloud ----
-ggplot(aroma_plot, 
+aroma_cloud <- ggplot(aroma_plot, 
   aes(
     label = aroma,
     size = count,
@@ -292,10 +297,16 @@ ggplot(aroma_plot,
   scale_size_area(max_size = 60) +
   labs(
     title = "Cheese Aroma Frequency",
-    subtitle = "Across 1000+ Varieties"
+    subtitle = "Across 1000+ Varieties",
+    caption = "@datatrev // Trevor Pendras // www.pendras.com"
     ) +
   scale_color_gradientn(colors = palette_aroma) +
   theme(
     plot.title = element_text(hjust = 0),
     plot.subtitle = element_text(hjust = 0)
     )
+
+flavor_column
+flavor_cloud
+aroma_column
+aroma_cloud

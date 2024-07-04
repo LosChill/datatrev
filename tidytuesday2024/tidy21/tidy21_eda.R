@@ -3,10 +3,10 @@ library(tidytuesdayR)
 library(paletteer)
 library(here)
 
-tuesdata <- tt_load(2024, week = 21)
-emissions <- tuesdata$emissions
+# tuesdata <- tt_load(2024, week = 21)
+# emissions <- tuesdata$emissions
 
-saveRDS(emissions, here("tidytuesday2024", "tidy21", "emissions.rds"))
+# saveRDS(emissions, here("tidytuesday2024", "tidy21", "emissions.rds"))
 
 emissions <- readRDS(here("tidytuesday2024", "tidy21", "emissions.rds"))
 
@@ -109,4 +109,3 @@ ggplot(mtco2, aes(x = year, y = slope, color = parent_entity)) +
     legend.position = "none",
     panel.border = element_rect(color = "beige", fill = NA, size = 1)
   )
-

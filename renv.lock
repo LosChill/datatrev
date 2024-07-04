@@ -924,6 +924,22 @@
       ],
       "Hash": "85f25ea0bb52935bd33d30b2c6c8f0a6"
     },
+    "ggrepel": {
+      "Package": "ggrepel",
+      "Version": "0.9.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "ggplot2",
+        "grid",
+        "rlang",
+        "scales",
+        "withr"
+      ],
+      "Hash": "cc3361e234c4a5050e29697d675764aa"
+    },
     "ggwordcloud": {
       "Package": "ggwordcloud",
       "Version": "0.6.2",

@@ -20,7 +20,6 @@ cheeses <- tuesdata$cheeses
 ## Colors ----
 text_color <- "beige"
 fill_color <- "#1f2d36"
-smooth_color <- "#002B36"
 
 palette_aroma <- paletteer::paletteer_c("ggthemes::Classic Area-Brown", n = 39)
 palette_flavor <- paletteer::paletteer_c("ggthemes::Classic Area-Brown", n = 45)
@@ -124,4 +123,22 @@ ggplot(data = country_avgs, aes(x = flav_average, y = aroma_average)) +
   geom_smooth(color = fill_color, fill = text_color, method = "lm") +
   geom_point(aes(color = country_count)) +
   geom_text_repel(aes(label = country, color = country_count), max.overlaps = 10000) +
+  paletteer::scale_color_paletteer_c("ggthemes::Classic Area-Brown")
+
+# Milk
+milk <- cheeses_flav_aroma %>% 
+  select(milk, flav_average, aroma_average) %>% 
+  separate_rows(milk, sep = ", ") %>% 
+  group_by(milk) %>% 
+  summarise(
+    flav_average = mean(flav_average),
+    aroma_average = mean(aroma_average),
+    milk_count = n()) %>% 
+  ungroup() %>% 
+  drop_na()
+
+# Milk Plot
+ggplot(data = milk, aes(x = flav_average, y = aroma_average)) +
+  geom_point(aes(color = milk_count)) +
+  geom_text_repel(aes(label = milk, color = milk_count)) +
   paletteer::scale_color_paletteer_c("ggthemes::Classic Area-Brown")
